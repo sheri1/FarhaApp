@@ -1,0 +1,43 @@
+{
+    "name": "Farha",
+    "displayName": "Farha",
+    "expo": {
+        "name": "Farha",
+        "slug": "Farha",
+        "privacy": "unlisted",
+        "sdkVersion": "36.0.0",
+        "version": "0.0.9",
+        "entryPoint": "node_modules/expo/AppEntry.js",
+        "platforms": [
+            "ios",
+            "android"
+        ],
+        "facebookScheme": "fb708839179526070",
+        "facebookAppId": "708839179526070",
+        "facebookDisplayName": "Farha",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "scheme": "farha",
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "notification": {
+            "icon": "./assets/icon.png",
+            "androidCollapsedTitle": "Farha",
+            "androidMode": "collapse"
+        },
+        "android": {
+            "package": "io.dits.Farha",
+            "versionCode": 9,
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyAfJ-UHLkQEtJdAJaqucHsG8BuacjYg3AY"
+                }
+            }
+        },
+        "description": ""
+    }
+}
