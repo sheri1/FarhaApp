@@ -1,13 +1,12 @@
-
-
 import React, { Component } from "react";
 import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity} from "react-native";
 import styles from "./RegisterDoneScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
+import { withFirebaseHOC } from '../../config/Firebase'
 
-export default class RegisterDoneScreen extends Component {
+ class RegisterDoneScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,6 +14,22 @@ export default class RegisterDoneScreen extends Component {
             isConnected: null,
         }
     }
+
+    // aya
+    componentDidMount() {
+        const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            currentUser.sendEmailVerification().then(function() {
+                // Email sent.
+                alert('Email sent Successfuly');
+              }).catch(function(error) {
+                // An error happened.
+                alert('error')
+              });
+        }
+    }
+
+    //
 
     render() {
         return (
@@ -44,3 +59,4 @@ export default class RegisterDoneScreen extends Component {
         );
     }
 }
+ export default withFirebaseHOC(RegisterDoneScreen)

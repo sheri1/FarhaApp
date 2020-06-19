@@ -1,3 +1,7 @@
+import {decode, encode} from 'base-64'
+if (!global.btoa) { global.btoa = encode }
+if (!global.atob) { global.atob = decode }
+
 import React, { Component } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { AppLoading } from "expo";
@@ -8,9 +12,11 @@ import { I18nManager } from "react-native";
 
 import MyAppNavigator from "./navigators/MyAppNavigator";
 import NotificationScreen from './screens/NotificationScreen'
-
 import Firebase, { FirebaseProvider } from './config/Firebase'
 
+// import {decode, encode} from './node_modules/Base64'
+//  if (!global.btoa) {  global.btoa = encode }
+//  if (!global.atob) { global.atob = decode }
 
 
 

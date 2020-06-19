@@ -7,12 +7,15 @@ import firebaseConfig from './firebaseConfig'
 firebase.initializeApp(firebaseConfig)
 
 const Firebase = {
-  // auth
+  // auth aya
+
+  auth:firebase.auth(),
+  
   loginWithEmail: (email, password) => {
     return firebase.auth().signInWithEmailAndPassword(email, password)
   },
-  signupWithEmail: (email, password) => {
-    return firebase.auth().createUserWithEmailAndPassword(email, password)
+  signupWithEmail: (email, password ) => {
+   return firebase.auth().createUserWithEmailAndPassword(email, password)
   },
   signOut: () => {
     return firebase.auth().signOut()
