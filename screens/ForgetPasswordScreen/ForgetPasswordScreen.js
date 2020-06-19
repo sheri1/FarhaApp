@@ -97,13 +97,11 @@ export default class ForgetPasswordScreen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 value={this.state.email}
-                                returnKeyType={"next"}
+                                returnKeyType={"done"}
                                 onChangeText={(email) => this.setState({ email })}
                                 blurOnSubmit={false}
                                 keyboardType="email-address"
-                                onSubmitEditing={() => {
-                                this.secondTextInput.focus();
-                                }}
+                                onSubmitEditing={() => this.forget()}
                                 style={styles.Input}
                             />
                             </View>
