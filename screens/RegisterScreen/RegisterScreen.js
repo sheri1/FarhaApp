@@ -116,12 +116,13 @@ class RegisterScreen extends Component {
           email,
           password
         )
-        console.log(currentUser.user);
-        if (currentUser.user.uid) {
-          const { uid } = currentUser.user;
-          const userData = { email, usernameNew, phone,city,uid };
-          await this.props.firebase.createNewUser(userData);
-          this.props.navigation.navigate('RegisterDoneScreen')
+        
+        if(currentUser.user){
+          const user = currentUser.user;
+          const uid = currentUser.user.uid;
+          const userData = { email, displayName, phone,city,uid };
+          await this.props.firebase.createUserDocument(user,userData);
+          this.props.navigation.navigate('RegisterDoneScreen');
         }
 
       } catch (err) {

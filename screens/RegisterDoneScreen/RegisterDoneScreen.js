@@ -17,7 +17,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
 
     // aya
     componentDidMount() {
-        const currentUser = this.props.firebase.auth.currentUser;
+        const currentUser = this.props.firebase.authMethod.currentUser;
         if(currentUser != null) {
             currentUser.sendEmailVerification().then(function() {
                 // Email sent.
