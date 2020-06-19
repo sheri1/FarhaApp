@@ -43,27 +43,6 @@ import Firebase, { FirebaseProvider } from './config/Firebase'
 
 
 
-///////////////////// for firestore 
-
-// const firebaseConfig = { ... }  // apiKey, authDomain, etc. (see above)
-
-// const dbh = firebase.firestore();
-
-// dbh.collection("characters").doc("mario").set({
-//   employment: "plumber",
-//   outfitColor: "red",
-//   specialAttack: "fireball"
-// }).catch(error =>console.log(error));
-
-
-
-///////////////////////////
-
-
-
-
-
-
 export default class App extends Component {
   constructor(props) {
     super(props);

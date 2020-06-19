@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Spinner from "react-native-loading-spinner-overlay";
 import NetInfo from "@react-native-community/netinfo";
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
+import Firebase from '../../config/Firebase'
 
 export default class ForgetPasswordScreen extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ export default class ForgetPasswordScreen extends Component {
         }
         })
         NetInfo.isConnected.addEventListener('connectionChange', this._handleConnectivityChange);
+
     }
 
     componentWillUnmount() {
@@ -132,6 +134,14 @@ export default class ForgetPasswordScreen extends Component {
     }
 
     forget(){
-        this.props.navigation.navigate('LoginScreen')
+       // this.props.navigation.navigate('LoginScreen')
+        var emailAddress = this.state.email;
+        Firebase.auth.sendPasswordResetEmail(emailAddress).then(function() {
+        // Email sent.
+        alert('Email sent Successfuly');
+        }).catch(function(error) {
+        alert('error')
+         });
     }
 }
+
