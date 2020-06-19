@@ -9,8 +9,8 @@ firebase.initializeApp(firebaseConfig)
 const Firebase = {
   // auth aya
 
-  auth:firebase.auth,
-  authMethod: firebase.auth(),
+  auth:firebase.auth(),
+  
   
   loginWithEmail: (email, password) => {
     return firebase.auth().signInWithEmailAndPassword(email, password)

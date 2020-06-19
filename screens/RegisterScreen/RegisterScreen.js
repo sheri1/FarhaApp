@@ -22,7 +22,7 @@ class RegisterScreen extends Component {
       visible:false,   
       
       username: "",
-      usernameNew:"",
+      displayName:"",
       password: "",
       password_confirmation:'',
       email: '',
@@ -79,10 +79,10 @@ class RegisterScreen extends Component {
   }
 
   validation = () => {
-    const {usernameNew,email,phone,city,password,password_confirmation} = this.state;
+    const {displayName,email,phone,city,password,password_confirmation} = this.state;
     let isValid = true;
 
-    if (!usernameNew.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !usernameNew){
+    if (!displayName.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !displayName){
         isValid = false;
         //add Error message
     }
@@ -110,7 +110,7 @@ class RegisterScreen extends Component {
   }
 
   handleOnSignup =  async () => {
-      const {usernameNew,email,phone,city,password} = this.state;
+      const {displayName,email,phone,city,password} = this.state;
       try {
         const currentUser = await this.props.firebase.signupWithEmail(
           email,
@@ -188,7 +188,7 @@ class RegisterScreen extends Component {
                             underlineColorAndroid="transparent"
                             returnKeyType={"next"}
                             onSubmitEditing={() => {this.secondTextInput.focus()}}
-                            onChangeText={(usernameNew) => this.setState({ usernameNew })}
+                            onChangeText={(displayName) => this.setState({ displayName })}
                             blurOnSubmit={false}
                             style={styles.Input}
                           />
