@@ -74,6 +74,21 @@ const Firebase = {
     } catch (error) {
       console.error('Error fetching user', error.message);
     }
+  },
+
+  updateUserDocument: async (uid,userDate) => {
+    if(!uid) return null;
+
+    try {
+      const userDocument = await firebase
+        .firestore()
+        .collection('users')
+        .doc(uid);
+
+        userDocument.update({...userDate})
+    } catch (error){
+      console.log('Error')
+    }
   }
 
 }

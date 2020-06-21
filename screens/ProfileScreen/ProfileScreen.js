@@ -3,16 +3,31 @@ import { View, ScrollView, StatusBar,Image,TouchableOpacity } from "react-native
 import styles from "./ProfileScreenStyle";
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import StyledText from "../../components/StyledTexts/StyledText";
-import {AntDesign} from '@expo/vector-icons'
+import {AntDesign} from '@expo/vector-icons';
+import { withFirebaseHOC } from '../../config/Firebase'
 
-export default class ProfileScreen extends Component {
+
+class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {          
+            user: {}
         }
     }
     
+    componentDidMount() {
+        const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            this.props.firebase.getUserDocument(currentUser.uid)
+                .then(userData=> {
+                    this.setState({user:userData})
+                    
+                })
+                .catch(error=>console.log('e',error))
+        }
+    }
     render() {
+        const {user} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={[styles.topBack,{zIndex:-1}]}>
@@ -35,12 +50,12 @@ export default class ProfileScreen extends Component {
             >     
                 <View style={{width: '100%',height:'100%',paddingBottom: 50}}>
                     <View style={styles.info}>
-                        <StyledText style={styles.name}>شيماء ابو عمرة</StyledText>
-                        <StyledText style={styles.email}>xxxxx @gmail .com</StyledText>
+        <StyledText style={styles.name}>{user.displayName}</StyledText>
+        <StyledText style={styles.email}>{user.email}</StyledText>
 
                         <View style={styles.infoRow}>
                             <View style={styles.infoRowinfo}>
-                                <StyledText style={styles.infotxt}>059777777</StyledText>
+        <StyledText style={styles.infotxt}>{user.phone}</StyledText>
                             </View>
                             <View style={styles.infoRowtitle}>
                                 <StyledText style={styles.title}>الهاتف :</StyledText>
@@ -92,3 +107,5 @@ export default class ProfileScreen extends Component {
         );
     }
 }
+
+export default withFirebaseHOC(ProfileScreen)

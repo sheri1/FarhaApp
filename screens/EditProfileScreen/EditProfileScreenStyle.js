@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     InputTilte:{textAlign:'right',color: titleColor,fontSize: 14,marginBottom: 5},
     Input:{flex:1,fontSize: 12,textAlign: 'right'},
 
-    RegisterButtonCont:{justifyContent: 'center',alignItems: 'center',marginBottom:10,marginTop:150,paddingHorizontal:20},
+    RegisterButtonCont:{justifyContent: 'center',alignItems: 'center',marginBottom:10,marginTop:10,paddingHorizontal:20},
     LoginTouch:{
         justifyContent:'center',alignItems:'center',height:50,backgroundColor:'#924480',
         borderRadius:10,width:'100%',

@@ -8,8 +8,9 @@ import {AntDesign,Feather} from '@expo/vector-icons'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import { withFirebaseHOC } from "../../config/Firebase";
 
-export default class EditProfileScreen extends Component {
+class EditProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -21,6 +22,37 @@ export default class EditProfileScreen extends Component {
         }
     }
 
+    componentDidMount() {
+        const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            this.props.firebase.getUserDocument(currentUser.uid)
+                .then(userData=> {
+                    this.setState({
+                        email:userData.email,
+                        phone:userData.phone,
+                        city:userData.city
+                    })
+                    
+                })
+                .catch(error=>console.log('e',error))
+        }
+    }
+
+    updateUserProfile() {
+        const {email,phone,city} = this.state;
+        const currentUser = this.props.firebase.auth.currentUser;
+        const userData = {email,phone,city}
+        if(currentUser != null) {
+            this.props.firebase.updateUserDocument(currentUser.uid,userData)
+            .then(function() {
+                alert("Document successfully updated!");
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+        }
+    }
     useLibraryHandler = async () => {
         await Permissions.askAsync(Permissions.CAMERA_ROLL);
         await ImagePicker.launchImageLibraryAsync({
@@ -39,6 +71,7 @@ export default class EditProfileScreen extends Component {
     };
     
     render() {
+        const {email,phone,city} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.topBack}>
@@ -98,6 +131,7 @@ export default class EditProfileScreen extends Component {
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
                                 keyboardType="email-address"
+                                value={email}
                                 ref={(input) => {this.secondTextInput = input}}
                                 onSubmitEditing={() => {this.ThirdTextInput.focus()}}
                                 onChangeText={(email) => this.setState({ email })}
@@ -116,6 +150,7 @@ export default class EditProfileScreen extends Component {
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
                                 keyboardType='phone-pad'
+                                value={phone}
                                 ref={(input) => {this.ThirdTextInput = input}}
                                 onSubmitEditing={() => {this.fourthTextInput.focus()}}
                                 onChangeText={(phone) => this.setState({ phone })}
@@ -126,19 +161,21 @@ export default class EditProfileScreen extends Component {
                         </View>
 
                         <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>المشكلة</StyledTextBold>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>المدينة</StyledTextBold>
                             <View style={{ flexDirection: 'row' }}>
                             <TextInput
                                 placeholder="المدينة"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
-                                returnKeyType={"next"}
+                                returnKeyType={"done"}
                                 keyboardType='default'
+                                value={city}
                                 ref={(input) => {this.fourthTextInput = input}}
                                 // onSubmitEditing={() => {this.fifthTextInput.focus()}}
                                 onChangeText={(city) => this.setState({ city })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
+                                onSubmitEditing={() => this.updateUserProfile()}
                             />
                             </View>
                         </View>
@@ -157,3 +194,5 @@ export default class EditProfileScreen extends Component {
         );
     }
 }
+
+export default withFirebaseHOC(EditProfileScreen);
