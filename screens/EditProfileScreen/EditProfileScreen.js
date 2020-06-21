@@ -73,7 +73,13 @@ class EditProfileScreen extends Component {
     render() {
         const {email,phone,city} = this.state;
         return (
-        <View style={styles.containerStyle}>          
+        <View style={styles.containerStyle}>    
+            <ScrollView
+                style={{ width: '100%' }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{flexGrow:1,justifyContent:'flex-start',backgroundColor:'#fff',paddingBottom:50}}
+                snapToStart={true}
+            >       
             <View style={styles.topBack}>
                 <View style={styles.StatusBar}>
                     <StatusBar barStyle="light-content"/>
@@ -108,7 +114,7 @@ class EditProfileScreen extends Component {
                 )} 
             </View>
 
-            <View style={{ width: '100%',marginTop: 10}}>
+            {/* <View style={{ width: '100%',marginTop: 10}}> */}
                 <ScrollView
                     style={{ width: '100%' }}
                     showsVerticalScrollIndicator={false}
@@ -118,7 +124,7 @@ class EditProfileScreen extends Component {
                 <KeyboardAwareScrollView
                     keyboardDismissMode="on-drag" //work only on ios
                     enableOnAndroid={true}
-                    style={{ width: "100%",paddingBottom:150}}
+                    style={{ width: "100%",paddingBottom:30}}
                 >
 
                     <View style={styles.InputContainer}>
@@ -182,14 +188,17 @@ class EditProfileScreen extends Component {
                     </View>
 
                     <View style={styles.RegisterButtonCont}>
-                        <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}>
+                        <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
+                        onPress={() => this.updateUserProfile()}
+                        >
                           <StyledText style={{color:'#fff',fontSize:15}}>حفظ</StyledText>
                         </TouchableOpacity>
                     </View>
 
                 </KeyboardAwareScrollView> 
                 </ScrollView>
-            </View>
+            {/* </View> */}
+            </ScrollView>
         </View>
         );
     }

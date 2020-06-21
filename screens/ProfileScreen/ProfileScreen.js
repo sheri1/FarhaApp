@@ -55,7 +55,7 @@ class ProfileScreen extends Component {
 
                         <View style={styles.infoRow}>
                             <View style={styles.infoRowinfo}>
-        <StyledText style={styles.infotxt}>{user.phone}</StyledText>
+                               <StyledText style={styles.infotxt}>{user.phone}</StyledText>
                             </View>
                             <View style={styles.infoRowtitle}>
                                 <StyledText style={styles.title}>الهاتف :</StyledText>
@@ -64,7 +64,7 @@ class ProfileScreen extends Component {
 
                         <View style={styles.infoRow}>
                             <View style={styles.infoRowinfo}>
-                                <StyledText style={styles.infotxt}>دير البلح</StyledText>
+                                <StyledText style={styles.infotxt}>{user.city}</StyledText>
                             </View>
                             <View style={styles.infoRowtitle}>
                                 <StyledText style={styles.title}>المدينة :</StyledText>
