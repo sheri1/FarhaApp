@@ -28,9 +28,9 @@ class EditProfileScreen extends Component {
             this.props.firebase.getUserDocument(currentUser.uid)
                 .then(userData=> {
                     this.setState({
-                        email,
-                        phone,
-                        city
+                        email:userData.email,
+                        phone:userData.phone,
+                        city:userData.city
                     })
                     
                 })
@@ -45,7 +45,7 @@ class EditProfileScreen extends Component {
         if(currentUser != null) {
             this.props.firebase.updateUserDocument(currentUser.uid,userData)
             .then(function() {
-                console.log("Document successfully updated!");
+                alert("Document successfully updated!");
             })
             .catch(function(error) {
                 // The document probably doesn't exist.
