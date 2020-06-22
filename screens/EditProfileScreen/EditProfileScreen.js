@@ -52,19 +52,21 @@ class EditProfileScreen extends Component {
             const imageName = result.image;
             if (!result.cancelled) {
                 this.setState({ image: path });
-                this.uploadImage(path, "image")
+                var date = new Date().getTime();
+                this.uploadImage(path,date);
+                
             }
         });
     };
-    
-    // uploadImage = async (path, imageName) => {
-    //     const response = await fetch(path);
-    //     const blob = await response.blob();
-    
-    //     var ref = firebase.storage().ref().child("images/" + imageName);
-    //     return ref.put(blob);
-    //   }
+   
 
+    uploadImage = async (path, imageName) => {
+        const response = await fetch(path);
+        const blob = await response.blob();
+    
+        var ref = firebase.storage().ref().child("images/" + imageName);
+        return ref.put(blob);
+      }
 
     updateUserProfile() {
         const {email,phone,city} = this.state;
@@ -79,19 +81,8 @@ class EditProfileScreen extends Component {
                 // The document probably doesn't exist.
                 console.error("Error updating document: ", error);
             });
-
         }
     }
-
-
-
-    //   uploadImage = async (path, imageName) => {
-    //     const response = await fetch(path);
-    //     const blob = await response.blob();
-    
-    //     var ref = firebase.storage().ref().child("images/" + imageName);
-    //     return ref.put(blob);
-    //   }
 
     render() {
         const {email,phone,city} = this.state;
