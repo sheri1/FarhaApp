@@ -15,10 +15,10 @@ export default class AddHallScreen extends Component {
         super(props);
         this.state = {
             hallName:"",
-            hallPrice:"",
+           // hallPrice:"",
             hallAddress:"",
-            hallCount:"",
-            hallPersons:"",
+            //hallCount:"",
+            //hallPersons:"",
             hallDescription:"",
 
             photos:[],
@@ -128,7 +128,7 @@ export default class AddHallScreen extends Component {
                             <StyledTextBold style={styles.InputContainer2Tilte}>اسم الصالة : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="صالة الأنوار"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
@@ -140,7 +140,7 @@ export default class AddHallScreen extends Component {
                             />
                             </View>
                         </View>
-
+{/* 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>سعر الصالة ($) : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -157,13 +157,13 @@ export default class AddHallScreen extends Component {
                                 style={styles.Input}
                             />
                             </View>
-                        </View>
+                        </View> */}
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>العنوان : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="دير البلح-البلد"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
@@ -177,7 +177,7 @@ export default class AddHallScreen extends Component {
                             </View>
                         </View>
 
-                        <View style={styles.InputContainer2}>
+                        {/* <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>عدد القاعات : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
@@ -193,9 +193,9 @@ export default class AddHallScreen extends Component {
                                 style={styles.Input}
                             />
                             </View>
-                        </View>
+                        </View> */}
 
-                        <View style={styles.InputContainer2}>
+                        {/* <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>عدد الأفراد المحتملين : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
@@ -211,13 +211,13 @@ export default class AddHallScreen extends Component {
                                 style={styles.Input}
                             />
                             </View>
-                        </View>
+                        </View> */}
                     
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الوصف : </StyledTextBold>
                             <View style={styles.input2Cont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="وصف للصالة"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}

@@ -14,6 +14,9 @@ export default class AddHallStep2Screen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            roomName:"",
+            roomPrice:"",
+            roomPersons:"",
             serviceName:"",
             servicePrice:"",
 
@@ -21,6 +24,7 @@ export default class AddHallStep2Screen extends Component {
 
             freeService:false,
             paidService:true,
+            photos:[],
 
         }
     }
@@ -32,7 +36,30 @@ export default class AddHallStep2Screen extends Component {
             this.setState({freeService:false,paidService:true})
         }
     }
+    
+    selectPicture = async () => {
+        await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: "Images"
+        }).then((result) => {
+            if (!result.cancelled) {
+                const {photos} = this.state
+                photos.push({path: result.uri})
+                this.setState({photos, imagesScrollVisibile: true})
+            }
+        })
+    }
 
+    deleteImage(index){
+        var array = [...this.state.photos]     // make a separate copy of the array
+        if (index !== -1) {
+            array.splice(index, 1)
+            this.setState({photos: array})
+            if(array.length == 0){
+                this.setState({imagesScrollVisibile: false})
+            }
+        }
+    }
 
     render() {
         return (
@@ -80,10 +107,92 @@ export default class AddHallStep2Screen extends Component {
                     <View style={styles.InputContainer}>
 
                         <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>تفاصيل القاعة :</StyledTextBold>
+                            <View style={styles.inputCont}>
+                                <TouchableOpacity style={styles.photoIcon} onPress={this.selectPicture}>
+                                    <FontAwesome name='camera' color='#924480' size={20}/>
+                                </TouchableOpacity>
+                                <View style={styles.photoTilteCont}>
+                                    <StyledTextBold style={styles.photoTilte}>اختر صور وقم بإرفاقها</StyledTextBold>
+                                </View>     
+                            </View>
+                        </View>
+
+                        {this.state.imagesScrollVisibile && (
+                        <ScrollView
+                            style={{flex:1, marginVertical: 10,marginBottom:20}} 
+                            horizontal={true} showsHorizontalScrollIndicator={false}
+                        >
+                            {this.state.photos.map((item, index)=>(
+                                <View key={index} style={{marginHorizontal:5}}> 
+                                    <Image source={{uri: item.path}} style={{height:90, width:90}} />
+                                    <TouchableOpacity style={{position: 'absolute', padding:3, right: 0}} onPress={()=>this.deleteImage(index)}>
+                                        <Ionicons name='ios-close-circle-outline' size={22} color='red'/>
+                                    </TouchableOpacity>
+                                </View>
+                            ))}  
+                        </ScrollView>
+                        )}
+
+                        <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>اسم القاعة : </StyledTextBold>
+                            <View style={styles.inputCont}>
+                            <TextInput
+                                placeholder="القاعة الكبرى"
+                                placeholderTextColor="#A2A2A2"
+                                underlineColorAndroid="transparent"
+                                returnKeyType={"next"}
+                                keyboardType="default"
+                                onSubmitEditing={() => {this.secondTextInput.focus()}}
+                                onChangeText={(roomName) => this.setState({ roomName })}
+                                blurOnSubmit={false}
+                                style={styles.Input}
+                            />
+                            </View>
+                        </View>
+
+                        <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>سعر القاعة ($) : </StyledTextBold>
+                            <View style={styles.inputCont}>
+                            <TextInput
+                                placeholder="****"
+                                placeholderTextColor="#A2A2A2"
+                                underlineColorAndroid="transparent"
+                                returnKeyType={"next"}
+                                keyboardType="default"
+                                ref={(input) => {this.secondTextInput = input}}
+                                onSubmitEditing={() => {this.ThirdTextInput.focus()}}
+                                onChangeText={(roomPrice) => this.setState({ roomPrice })}
+                                blurOnSubmit={false}
+                                style={styles.Input}
+                            />
+                            </View>
+                        </View>
+
+                        <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>عدد الأفراد المحتملين : </StyledTextBold>
+                            <View style={styles.inputCont}>
+                            <TextInput
+                                placeholder="****"
+                                placeholderTextColor="#A2A2A2"
+                                underlineColorAndroid="transparent"
+                                returnKeyType={"next"}
+                                keyboardType="default"
+                                ref={(input) => {this.FifthTextInput = input}}
+                                onSubmitEditing={() => {this.SixthTextInput.focus()}}
+                                onChangeText={(roomPersons) => this.setState({ roomPersons })}
+                                blurOnSubmit={false}
+                                style={styles.Input}
+                            />
+                            </View>
+                        </View>
+
+
+                        <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الخدمات :</StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="اسم الخدمة"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
@@ -120,7 +229,7 @@ export default class AddHallStep2Screen extends Component {
                             <StyledTextBold style={styles.InputContainer2Tilte}>سعر الخدمة ($) : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="****"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
@@ -135,7 +244,8 @@ export default class AddHallStep2Screen extends Component {
                         </View>
                     </View>
 
-                    <View style={[styles.RegisterButtonCont,{marginTop:200}]}>
+                    {/* <View style={[styles.RegisterButtonCont,{marginTop:70}]}> */}
+                    <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
                           onPress={() => {this.nextAddHall()}}
                         >

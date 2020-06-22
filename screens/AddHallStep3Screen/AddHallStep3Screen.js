@@ -158,7 +158,7 @@ export default class AddHallStep3Screen extends Component {
                             <StyledTextBold style={styles.InputContainer2Tilte}>الايميل : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="********"
+                                placeholder="example@gmail.com"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
@@ -173,7 +173,8 @@ export default class AddHallStep3Screen extends Component {
                         </View>
                     </View>
 
-                    <View style={[styles.RegisterButtonCont,{marginTop: 100}]}>
+                    {/* <View style={[styles.RegisterButtonCont,{marginTop: 100}]}> */}
+                    <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
                           onPress={() => {this.doneAddHall()}}
                         >
