@@ -6,6 +6,7 @@ import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as firebase from 'firebase';
 
 export default class ChangePasswordScreen extends Component {
     constructor(props) {
@@ -16,6 +17,24 @@ export default class ChangePasswordScreen extends Component {
             confirmNewPass:'',
         }
     }
+
+     // Reauthenticates the current user and returns a promise...
+  reauthenticate = (oldPass) => {
+    var user = firebase.auth().currentUser;
+    var cred = firebase.auth.EmailAuthProvider.credential(user.email, oldPass);
+    return user.reauthenticateWithCredential(cred);
+  }
+
+  // Changes user's password...
+  onChangePasswordPress() {
+    this.reauthenticate(this.state.oldPass).then(() => {
+      var user = firebase.auth().currentUser;
+      user.updatePassword(this.state.newPass).then(() => {
+        alert("Password successfully updated!");
+      }).catch((error) => { console.log(error.message); });
+    }).catch((error) => { console.log(error.message) });
+  }
+
 
     render() {
         return (
@@ -90,6 +109,7 @@ export default class ChangePasswordScreen extends Component {
                                 keyboardType="default"
                                 ref={(input) => {this.ThirdTextInput = input}}
                                 onChangeText={(confirmNewPass) => this.setState({ confirmNewPass })}
+                                onSubmitEditing={() => this.onChangePasswordPress()}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
@@ -100,7 +120,7 @@ export default class ChangePasswordScreen extends Component {
 
                     <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
-                          // onPress={() => {this._register()}}
+                           onPress={() => this.onChangePasswordPress()}
                         >
                           <StyledText style={{color:'#fff',fontSize:15}}>حفظ</StyledText>
                         </TouchableOpacity>

@@ -8,6 +8,7 @@ import {AntDesign,Feather} from '@expo/vector-icons'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import * as firebase from 'firebase/app'
 import { withFirebaseHOC } from "../../config/Firebase";
 
 class EditProfileScreen extends Component {
@@ -37,6 +38,33 @@ class EditProfileScreen extends Component {
                 .catch(error=>console.log('e',error))
         }
     }
+    useLibraryHandler = async () => {
+        await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        await ImagePicker.launchImageLibraryAsync({
+        // mediaTypes: "Images"
+            mediaTypes: "Images",
+            allowsEditing: true,
+            aspect: [4, 4],
+            quality: 1,
+        }).then((result) => {
+            // console.log(result, "result");
+            const path = result.uri;
+            const imageName = result.image;
+            if (!result.cancelled) {
+                this.setState({ image: path });
+                this.uploadImage(path, "image")
+            }
+        });
+    };
+    
+    // uploadImage = async (path, imageName) => {
+    //     const response = await fetch(path);
+    //     const blob = await response.blob();
+    
+    //     var ref = firebase.storage().ref().child("images/" + imageName);
+    //     return ref.put(blob);
+    //   }
+
 
     updateUserProfile() {
         const {email,phone,city} = this.state;
@@ -51,25 +79,20 @@ class EditProfileScreen extends Component {
                 // The document probably doesn't exist.
                 console.error("Error updating document: ", error);
             });
+
         }
     }
-    useLibraryHandler = async () => {
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        await ImagePicker.launchImageLibraryAsync({
-        // mediaTypes: "Images"
-            mediaTypes: "Images",
-            allowsEditing: true,
-            aspect: [4, 4],
-            quality: 1,
-        }).then((result) => {
-            // console.log(result, "result");
-            const path = result.uri;
-            if (!result.cancelled) {
-                this.setState({ image: path });
-            }
-        });
-    };
+
+
+
+    //   uploadImage = async (path, imageName) => {
+    //     const response = await fetch(path);
+    //     const blob = await response.blob();
     
+    //     var ref = firebase.storage().ref().child("images/" + imageName);
+    //     return ref.put(blob);
+    //   }
+
     render() {
         const {email,phone,city} = this.state;
         return (

@@ -26,6 +26,9 @@ class ProfileScreen extends Component {
                 .catch(error=>console.log('e',error))
         }
     }
+
+
+
     render() {
         const {user} = this.state;
         return (
