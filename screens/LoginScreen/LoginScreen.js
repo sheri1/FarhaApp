@@ -9,8 +9,10 @@ import { Ionicons } from "@expo/vector-icons";
 import Spinner from "react-native-loading-spinner-overlay";
 import NetInfo from "@react-native-community/netinfo";
 import * as firebase from "firebase"; 
+import * as Facebook from 'expo-facebook';
+import { withFirebaseHOC } from "../../config/Firebase";
 
-export default class LoginScreen extends Component {
+class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,6 +53,30 @@ export default class LoginScreen extends Component {
     this.setState({
       securePassword: !this.state.securePassword
     })
+  }
+
+  async loginWithFacebook() {
+
+    try {
+      Facebook.initializeAsync('1160721987624507','Farhah');
+      const { type, token } = await Facebook.logInWithReadPermissionsAsync('1160721987624507', 
+              {permissions: ['public_profile','email']})
+
+    if (type == 'success') {
+
+      const credential = firebase.auth.FacebookAuthProvider.credential(token)
+
+      firebase.auth().signInWithCredential(credential)
+      .then(result => {
+        //create user profile 
+        console.log(result);
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
+    } catch (error){
+      console.log('error ',error)
+    }
   }
 
   render() {
@@ -178,7 +204,7 @@ export default class LoginScreen extends Component {
                             <Image source={require('../../assets/images/google.png')} />
                           </TouchableOpacity>
 
-                          <TouchableOpacity style={styles.SocialIconFace}>
+                          <TouchableOpacity style={styles.SocialIconFace} onPress={this.loginWithFacebook}>
                             <Image source={require('../../assets/images/facebook.png')} />
                           </TouchableOpacity>
                         </View>
@@ -230,3 +256,5 @@ export default class LoginScreen extends Component {
 
   }
 }
+
+export default withFirebaseHOC(LoginScreen);

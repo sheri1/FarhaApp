@@ -19,7 +19,8 @@ class EditProfileScreen extends Component {
             spinner: false,
             phone:'',
             city:'',
-            image:''         
+            image:'',
+            photoURL:''         
         }
     }
 
@@ -31,7 +32,8 @@ class EditProfileScreen extends Component {
                     this.setState({
                         email:userData.email,
                         phone:userData.phone,
-                        city:userData.city
+                        city:userData.city,
+                        photoURL:userData.photoURL
                     })
                     
                 })
@@ -65,17 +67,24 @@ class EditProfileScreen extends Component {
         const blob = await response.blob();
     
         var ref = firebase.storage().ref().child("images/" + imageName);
-        return ref.put(blob);
-      }
+        return ref.put(blob).then(result => {
+            ref.getDownloadURL().then(url=>this.setState({photoURL:url}))
+        })
+    }
 
     updateUserProfile() {
-        const {email,phone,city} = this.state;
+        const {email,phone,city,photoURL} = this.state;
         const currentUser = this.props.firebase.auth.currentUser;
-        const userData = {email,phone,city}
+        const userData = {email,phone,city,photoURL}
         if(currentUser != null) {
+           
+             
             this.props.firebase.updateUserDocument(currentUser.uid,userData)
             .then(function() {
-                alert("Document successfully updated!");
+                currentUser.updateProfile({email,phone,photoURL})
+                .then (()=> {
+                    alert("Document successfully updated!");
+                })
             })
             .catch(function(error) {
                 // The document probably doesn't exist.
@@ -85,7 +94,7 @@ class EditProfileScreen extends Component {
     }
 
     render() {
-        const {email,phone,city} = this.state;
+        const {email,phone,city,photoURL} = this.state;
         return (
         <View style={styles.containerStyle}>    
             <ScrollView
@@ -108,10 +117,10 @@ class EditProfileScreen extends Component {
                 (
                     <ImageBackground 
                         style={{height:100,width:100,borderRadius:100/2}} imageStyle={{height:100,width:100,borderRadius:100/2}}
-                        source={require('../../assets/images/profile.png')}
+                        source={photoURL.length === 0 ? require('../../assets/images/user.png') : {uri:photoURL}}
                     >
                         <TouchableOpacity style={{alignItems:'center',top:35}} onPress={this.useLibraryHandler}>
-                            <Feather name='camera' size={20} color='#fff'/>
+                            <Feather name='camera' size={20} color='#777'/>
                         </TouchableOpacity>
                     </ImageBackground>
                 )

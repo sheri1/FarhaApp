@@ -11,7 +11,8 @@ class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {          
-            user: {}
+            user: {},
+            photoURL:''
         }
     }
     
@@ -20,8 +21,8 @@ class ProfileScreen extends Component {
         if(currentUser != null) {
             this.props.firebase.getUserDocument(currentUser.uid)
                 .then(userData=> {
-                    this.setState({user:userData})
-                    
+                    this.setState({user:userData});
+                    this.setState({photoURL:userData.photoURL});
                 })
                 .catch(error=>console.log('e',error))
         }
@@ -30,7 +31,7 @@ class ProfileScreen extends Component {
 
 
     render() {
-        const {user} = this.state;
+        const {user,photoURL} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={[styles.topBack,{zIndex:-1}]}>
@@ -43,7 +44,7 @@ class ProfileScreen extends Component {
             </View>
             <View style={{width:'100%',left:40,top:-50,zIndex:2,height:30}}>
                 <Image style={{height:100,width:100,borderRadius:100/2}}
-                    source={require('../../assets/images/profile.png')} />
+                    source={photoURL.length === 0 ? require('../../assets/images/user.png') : {uri:photoURL}} />
             </View>
             <ScrollView
                 style={{ width: '100%' }}
