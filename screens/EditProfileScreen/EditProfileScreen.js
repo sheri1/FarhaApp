@@ -68,7 +68,9 @@ class EditProfileScreen extends Component {
     
         var ref = firebase.storage().ref().child("images/" + imageName);
         return ref.put(blob).then(result => {
-            ref.getDownloadURL().then(url=>this.setState({photoURL:url}))
+             ref.getDownloadURL().then(url=>{
+                this.setState({photoURL:url});
+            }).catch(e=>console.log(e))
         })
     }
 
@@ -76,9 +78,8 @@ class EditProfileScreen extends Component {
         const {email,phone,city,photoURL} = this.state;
         const currentUser = this.props.firebase.auth.currentUser;
         const userData = {email,phone,city,photoURL}
+     
         if(currentUser != null) {
-           
-             
             this.props.firebase.updateUserDocument(currentUser.uid,userData)
             .then(function() {
                 currentUser.updateProfile({email,phone,photoURL})
@@ -89,7 +90,7 @@ class EditProfileScreen extends Component {
             .catch(function(error) {
                 // The document probably doesn't exist.
                 console.error("Error updating document: ", error);
-            });
+            });            
         }
     }
 
@@ -117,7 +118,7 @@ class EditProfileScreen extends Component {
                 (
                     <ImageBackground 
                         style={{height:100,width:100,borderRadius:100/2}} imageStyle={{height:100,width:100,borderRadius:100/2}}
-                        source={photoURL.length === 0 ? require('../../assets/images/user.png') : {uri:photoURL}}
+                        source={!photoURL ? require('../../assets/images/user.png') : {uri:photoURL}}
                     >
                         <TouchableOpacity style={{alignItems:'center',top:35}} onPress={this.useLibraryHandler}>
                             <Feather name='camera' size={20} color='#777'/>

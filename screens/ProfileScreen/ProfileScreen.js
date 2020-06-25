@@ -12,7 +12,7 @@ class ProfileScreen extends Component {
         super(props);
         this.state = {          
             user: {},
-            photoURL:''
+            photoURL:null
         }
     }
     
@@ -44,7 +44,7 @@ class ProfileScreen extends Component {
             </View>
             <View style={{width:'100%',left:40,top:-50,zIndex:2,height:30}}>
                 <Image style={{height:100,width:100,borderRadius:100/2}}
-                    source={photoURL.length === 0 ? require('../../assets/images/user.png') : {uri:photoURL}} />
+                    source={!photoURL ? require('../../assets/images/user.png') : {uri:photoURL}} />
             </View>
             <ScrollView
                 style={{ width: '100%' }}
