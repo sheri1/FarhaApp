@@ -6,8 +6,9 @@ import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { withFirebaseHOC } from '../../config/Firebase'
 
-export default class ContactScreen extends Component {
+class ContactScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,6 +21,47 @@ export default class ContactScreen extends Component {
             problem:''
         }
     }
+
+    contactUs(){
+        if(this.validation()){
+          this.handleContactUs();
+          }else {
+            alert('يرجى تعبئة جميع الحقول بالشكل الصحيح');
+          }
+
+    }
+
+    validation = () => {
+        const {username,email,phone} = this.state;
+        let isValid = true;
+    
+        if (!username.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !username){
+            isValid = false;
+            //add Error message
+        }
+    
+        if(!email.match(/[^\d][\w.]+@\w+(\.[A-Za-z]+){1,2}/g) || !email){
+          isValid = false;
+            //add Error message
+        }
+    
+        if (!phone.match(/[0-9]{10}/) || !phone){
+          isValid = false;
+            //add Error message
+        }
+    
+        return isValid;
+      }
+
+
+      handleContactUs =  async () => {
+        const {username,email,phone} = this.state;
+         //
+         
+         this.props.navigation.navigate('ContactDoneScreen');
+        
+       }
+
 
     render() {
         return (
@@ -49,7 +91,7 @@ export default class ContactScreen extends Component {
                     <View style={styles.InfoCont}>
                         <View style={styles.InfoRow}>
                             <View style={{flex:1}}>
-                                <StyledText style={styles.info}>farha@hotmail.com</StyledText>
+                                <StyledText style={styles.info}>farha.application@gmail.com</StyledText>
                             </View>
                             <Image source={require('../../assets/images/email.png')}/>
                         </View>
@@ -63,7 +105,7 @@ export default class ContactScreen extends Component {
 
                         <View style={styles.InfoRow}>
                             <View style={{flex:1}}>
-                                <StyledText style={styles.info}>059999999</StyledText>
+                                <StyledText style={styles.info}>0592476327</StyledText>
                             </View>
                             <Image source={require('../../assets/images/mobile.png')}/>
                         </View>
@@ -84,7 +126,7 @@ export default class ContactScreen extends Component {
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
                                 onSubmitEditing={() => {this.secondTextInput.focus()}}
-                                onChangeText={(usernameNew) => this.setState({ usernameNew })}
+                                onChangeText={(username) => this.setState({ username })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
@@ -137,7 +179,7 @@ export default class ContactScreen extends Component {
                                 returnKeyType={"next"}
                                 keyboardType='default'
                                 ref={(input) => {this.fourthTextInput = input}}
-                                // onSubmitEditing={() => {this.fifthTextInput.focus()}}
+                                onSubmitEditing={() => {this.contactUs()}}
                                 onChangeText={(problem) => this.setState({ problem })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
@@ -148,7 +190,7 @@ export default class ContactScreen extends Component {
 
                     <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
-                          // onPress={() => {this._register()}}
+                          onPress={() => {this.contactUs()}}
                         >
                           <StyledText style={{color:'#fff',fontSize:15}}>إرسال</StyledText>
                         </TouchableOpacity>
@@ -160,4 +202,7 @@ export default class ContactScreen extends Component {
         </View>
         );
     }
+
 }
+
+export default withFirebaseHOC(ContactScreen)

@@ -34,7 +34,7 @@ export default class ContactDoneScreen extends Component {
                     <StyledText style={styles.thanks}>شكرا على التواصل</StyledText>
                     <StyledText style={styles.try}>سنحاول التواصل معك بأقرب وقت</StyledText>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('HomeScreen')}>
                         <StyledText style={styles.move}>الانتقال للرئيسية</StyledText>
                     </TouchableOpacity>
                 

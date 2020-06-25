@@ -21,6 +21,7 @@ import FavoriteScreen from "../screens/FavoriteScreen";
 import OffersScreen from "../screens/OffersScreen";
 import AboutAppScreen from "../screens/AboutAppScreen";
 import ContactScreen from "../screens/ContactScreen";
+import ContactDoneScreen from "../screens/ContactDoneScreen";
 import CommonQuestionScreen from "../screens/CommonQuestionScreen";
 
 // import ShareAppScreen from "../screens/ShareAppScreen";
@@ -36,6 +37,7 @@ const AppStack = createDrawerNavigator(
     OffersScreen:{screen:OffersScreen},
     AboutAppScreen:{screen:AboutAppScreen},
     ContactScreen:{screen:ContactScreen},
+    ContactDoneScreen:{screen:ContactDoneScreen},
     CommonQuestionScreen:{screen:CommonQuestionScreen},
     UseRuleScreen:{screen:UseRuleScreen},
     PolicyScreen:{screen:PolicyScreen},
