@@ -20,7 +20,6 @@ class RegisterScreen extends Component {
       location: null,
       isConnected: null,
       visible:false,   
-      
       username: "",
       displayName:"",
       password: "",
@@ -29,7 +28,7 @@ class RegisterScreen extends Component {
       area: '',
       securePassword:true,
       securePassword2:true,
-      errorslist:[],
+      errors:{},
       phone:'',
       city:''
       
@@ -81,31 +80,43 @@ class RegisterScreen extends Component {
   validation = () => {
     const {displayName,email,phone,city,password,password_confirmation} = this.state;
     let isValid = true;
+    let errors = {};
 
     if (!displayName.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !displayName){
         isValid = false;
         //add Error message
+        errors["name"] = "الاسم يتكون من أحرف عربية أو انجليزية فقط";
+    }
+
+    if (displayName.length < 3) {
+      validName = false;
+      errors["name"] = "الاسم الذي أدخلته قصير للغاية";
     }
 
     if(!email.match(/[^\d][\w.]+@\w+(\.[A-Za-z]+){1,2}/g) || !email){
       isValid = false;
+      errors["email"] = "البريد الالكتروني الذي أدخلته غير صحيح";
         //add Error message
     }
 
     if (!phone.match(/[0-9]{10}/) || !phone){
       isValid = false;
+      errors["phone"] = "رقم الهاتف الذي أدخلته غير صحيح";
         //add Error message
     }
 
     if(!city.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !city){
       isValid = false;
+      errors["city"] = "يرجى التحقق من اسم المدينة"
       //add Error message
     }
 
     if(password !== password_confirmation){
       isValid = false;
+      errors["password"] = "كلمتا المرور غير متطابقتان"
     }
 
+    this.setState({errors})
     return isValid;
   }
 
@@ -140,6 +151,7 @@ class RegisterScreen extends Component {
   }
 
   render() {
+    const {errors} = this.state;
     return (
       <>
         <View style={styles.containerLinear}>
@@ -194,6 +206,7 @@ class RegisterScreen extends Component {
                           />
                         </View>
                       </View>
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["name"]}</StyledText>
 
                       <View style={styles.InputContainer2}>
                         <StyledTextBold style={styles.InputContainer2Tilte}>البريد الالكتروني</StyledTextBold>
@@ -213,6 +226,8 @@ class RegisterScreen extends Component {
                         </View>
                       </View>
 
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["email"]}</StyledText>
+
                       <View style={styles.InputContainer2}>
                         <StyledTextBold style={styles.InputContainer2Tilte}>الهاتف</StyledTextBold>
                         <View style={{ flexDirection: 'row' }}>
@@ -231,6 +246,9 @@ class RegisterScreen extends Component {
                         </View>
                       </View>
 
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["phone"]}</StyledText>
+
+
                       <View style={styles.InputContainer2}>
                         <StyledTextBold style={styles.InputContainer2Tilte}>المدينة</StyledTextBold>
                         <View style={{ flexDirection: 'row' }}>
@@ -248,6 +266,9 @@ class RegisterScreen extends Component {
                           />
                         </View>
                       </View>
+
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["city"]}</StyledText>
+
 
                       <View style={styles.InputContainer2}>
                         <StyledTextBold style={styles.InputContainer2Tilte}>كلمة المرور</StyledTextBold>
@@ -292,6 +313,9 @@ class RegisterScreen extends Component {
                           />
                         </View>
                       </View>
+
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["password"]}</StyledText>
+
 
                       <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}

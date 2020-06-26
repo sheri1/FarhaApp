@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     InputContainer: {
         paddingHorizontal: 15
     },
-    InputContainer2:{marginBottom:15,justifyContent:'center',alignItems:'center',height:70,paddingRight:10,
+    InputContainer2:{marginBottom:5,justifyContent:'center',alignItems:'center',height:70,paddingRight:10,
         paddingLeft:10,borderRadius:10,borderBottomColor:'#E5E5E5',borderBottomWidth:1
     },
     InputContainer2Tilte:{width:'100%',fontSize:12,textAlign: 'right',marginBottom: 5},

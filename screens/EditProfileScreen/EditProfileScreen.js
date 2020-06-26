@@ -15,12 +15,13 @@ class EditProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            email: '',
+            displayName: '',
             spinner: false,
             phone:'',
             city:'',
             image:'',
-            photoURL:''         
+            photoURL:'',
+            errors:{}       
         }
     }
 
@@ -30,7 +31,7 @@ class EditProfileScreen extends Component {
             this.props.firebase.getUserDocument(currentUser.uid)
                 .then(userData=> {
                     this.setState({
-                        email:userData.email,
+                        displayName:userData.displayName,
                         phone:userData.phone,
                         city:userData.city,
                         photoURL:userData.photoURL
@@ -54,9 +55,9 @@ class EditProfileScreen extends Component {
             const imageName = result.image;
             if (!result.cancelled) {
                 this.setState({ image: path });
-                var date = new Date().getTime();
+                var date = new Date().getTime();                
                 this.uploadImage(path,date);
-                
+            
             }
         });
     };
@@ -66,36 +67,67 @@ class EditProfileScreen extends Component {
         const response = await fetch(path);
         const blob = await response.blob();
     
-        var ref = firebase.storage().ref().child("images/" + imageName);
-        return ref.put(blob).then(result => {
-             ref.getDownloadURL().then(url=>{
-                this.setState({photoURL:url});
-            }).catch(e=>console.log(e))
+        const ref = firebase.storage().ref().child("images/" + imageName);
+        return ref.put(blob).then(() => { //After store the image -> get the url of it 
+                ref.getDownloadURL()
+                .then(url=>{
+                    this.setState({photoURL:url});
+                })
         })
     }
 
+    validation = () => {
+        const {displayName,phone,city} = this.state;
+        let isValid = true;
+        let errors = {};
+
+        if (!displayName.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !displayName){
+            isValid = false;
+            //add Error message
+            errors['name'] = "الاسم الذي أدخلته غير صحيح"
+        }
+    
+        if (!phone.match(/[0-9]{10}/) || !phone || phone.length > 15){
+          isValid = false;
+          errors["phone"] = "رقم الهاتف الذي أدخلته غير صحيح"
+            //add Error message
+        }
+    
+        if(!city.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !city){
+          isValid = false;
+          errors["city"] = "يرجى التحقق من اسم المدينة"
+          //add Error message
+        }
+
+        this.setState({errors})
+        return isValid;
+      }
+
     updateUserProfile() {
-        const {email,phone,city,photoURL} = this.state;
+        const {displayName,phone,city,photoURL} = this.state;
         const currentUser = this.props.firebase.auth.currentUser;
-        const userData = {email,phone,city,photoURL}
+        const userData = {displayName,phone,city,photoURL}
      
-        if(currentUser != null) {
-            this.props.firebase.updateUserDocument(currentUser.uid,userData)
-            .then(function() {
-                currentUser.updateProfile({email,phone,photoURL})
-                .then (()=> {
-                    alert("Document successfully updated!");
+        if(this.validation()){
+            if(currentUser != null) {
+                this.props.firebase.updateUserDocument(currentUser.uid,userData)
+                .then(function() {
+                    
+                    currentUser.updateProfile({displayName,phone,photoURL})
+                    .then (()=> {
+                        alert("Document successfully updated!");
+                    })
                 })
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });            
+                .catch(function(error) {
+                    // The document probably doesn't exist.
+                    console.error("Error updating document: ", error);
+                });            
+            }
         }
     }
 
     render() {
-        const {email,phone,city,photoURL} = this.state;
+        const {displayName,phone,city,photoURL,errors} = this.state;
         return (
         <View style={styles.containerStyle}>    
             <ScrollView
@@ -153,23 +185,23 @@ class EditProfileScreen extends Component {
 
                     <View style={styles.InputContainer}>
                         <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>البريد الالكتروني</StyledTextBold>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>الإسم</StyledTextBold>
                             <View style={{ flexDirection: 'row' }}>
                             <TextInput
-                                placeholder="البريد الالكتروني"
+                                placeholder="اسم المستخدم"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="email-address"
-                                value={email}
+                                value={displayName}
                                 ref={(input) => {this.secondTextInput = input}}
                                 onSubmitEditing={() => {this.ThirdTextInput.focus()}}
-                                onChangeText={(email) => this.setState({ email })}
+                                onChangeText={(displayName) => this.setState({ displayName })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
                             </View>
                         </View>
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["name"]}</StyledText>
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الهاتف</StyledTextBold>
@@ -189,6 +221,7 @@ class EditProfileScreen extends Component {
                             />
                             </View>
                         </View>
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["phone"]}</StyledText>
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>المدينة</StyledTextBold>
@@ -209,6 +242,8 @@ class EditProfileScreen extends Component {
                             />
                             </View>
                         </View>
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["city"]}</StyledText>
+
                     </View>
 
                     <View style={styles.RegisterButtonCont}>
