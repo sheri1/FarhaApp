@@ -23,6 +23,14 @@ export default class AddHallStep3Screen extends Component {
         }
     }
 
+
+    // للتجربة عشان نطبع الداتا بالتيرمينال 
+    componentDidMount(){
+        console.log(this.props.navigation.getParam('firstInfo'))
+        console.log(this.props.navigation.getParam('secInfo'))
+    }
+    //
+
     selectPicture2 = async () => {
         await Permissions.askAsync(Permissions.CAMERA_ROLL);
         await ImagePicker.launchImageLibraryAsync({
@@ -192,6 +200,12 @@ export default class AddHallStep3Screen extends Component {
     }
 
     doneAddHall(){
+        let fisrtStep = this.props.navigation.getParam('firstInfo')
+        let secStep = this.props.navigation.getParam('secInfo')
+
+        //
+
+        
         this.props.navigation.navigate('AddHallDoneScreen')
     }
 }

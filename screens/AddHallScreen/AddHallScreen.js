@@ -250,7 +250,14 @@ export default class AddHallScreen extends Component {
         );
     }
 
+    // بعتنا الداتا تعت الخطوة الآولى ك اوبجكت 
     nextAddHall(){
-        this.props.navigation.navigate('AddHallStep2Screen')
+        const firstStep = {
+            hallName:this.state.hallName,
+            hallAddress:this.state.hallAddress,
+            hallDescription:this.state.hallDescription,
+            photos:this.state.photos,
+        }
+        this.props.navigation.navigate('AddHallStep2Screen',{firstInfo:firstStep})
     }
 }

@@ -29,6 +29,13 @@ export default class AddHallStep2Screen extends Component {
         }
     }
 
+    // للتجربة عشان نطبع الداتا بالتيرمينال 
+    componentDidMount(){
+        console.log(this.props.navigation.getParam('firstInfo'))
+    }
+    //
+
+    
     chooseServiceType(t){
         if(t == 'f'){
             this.setState({freeService:true,paidService:false})
@@ -263,6 +270,15 @@ export default class AddHallStep2Screen extends Component {
     }
     
     nextAddHall(){
-        this.props.navigation.navigate('AddHallStep3Screen')
+        const secStep = { 
+            roomName:this.state.roomName,
+            roomPrice:this.state.roomPrice,
+            roomPersons:this.state.roomPersons,
+            serviceName:this.state.serviceName,
+            servicePrice:this.state.servicePrice,
+            photos:this.state.photos,
+        }
+        this.props.navigation.navigate('AddHallStep3Screen',
+            {firstInfo:this.props.navigation.getParam('firstInfo'),secInfo:secStep})
     }
 }
