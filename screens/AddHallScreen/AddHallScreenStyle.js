@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     },
 
     inputCont:{flexDirection: 'row',backgroundColor:'#FAFAFA',height:50,borderRadius:10,paddingHorizontal:10,
-        marginBottom: 10
+        marginBottom: 0
     },
     input2Cont:{flexDirection: 'row',backgroundColor:'#FAFAFA',minHeight:100,borderRadius:10,paddingHorizontal:10,
         marginBottom: 10, justifyContent:'center',alignItems:'flex-start',padding:5

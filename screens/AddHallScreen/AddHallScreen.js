@@ -15,15 +15,11 @@ export default class AddHallScreen extends Component {
         super(props);
         this.state = {
             hallName:"",
-           // hallPrice:"",
             hallAddress:"",
-            //hallCount:"",
-            //hallPersons:"",
             hallDescription:"",
-
             photos:[],
             imagesScrollVisibile: false,
-
+            errors: {},
             step1:true,
         }
     }
@@ -52,7 +48,36 @@ export default class AddHallScreen extends Component {
         }
     }
 
+    validation() {
+        let isValid = true;
+        const {hallName,hallAddress,hallDescription,photos,errors} = this.state;
+        if (!hallName) {
+            isValid = false;
+            errors["hallName"] = "الرجاء ادخال اسم الصالة"
+        }
+
+        if (!hallAddress) {
+            isValid = false;
+            errors["hallAddress"] = "الرجاء ادخال عنوان الصالة"
+        }
+
+        if (!hallDescription) {
+            isValid = false;
+            errors["description"] = "الرجاء ادخال وصف عن الصالة"
+        }
+
+        if (photos.length === 0) {
+            isValid = false;
+            errors["photoError"] = "الرجاء اختيار صورة للصالة"
+        }
+
+        this.setState({errors});
+        return isValid;
+
+    }
+
     render() {
+        const {errors} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -110,7 +135,7 @@ export default class AddHallScreen extends Component {
 
                         {this.state.imagesScrollVisibile && (
                         <ScrollView
-                            style={{flex:1, marginVertical: 10,marginBottom:20}} 
+                            style={{flex:1, marginVertical: 10,marginBottom:5}} 
                             horizontal={true} showsHorizontalScrollIndicator={false}
                         >
                             {this.state.photos.map((item, index)=>(
@@ -124,6 +149,10 @@ export default class AddHallScreen extends Component {
                         </ScrollView>
                         )}
 
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["photoError"]}</StyledText>
+
+
+
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>اسم الصالة : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -133,31 +162,15 @@ export default class AddHallScreen extends Component {
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
                                 keyboardType="default"
-                                onSubmitEditing={() => {this.secondTextInput.focus()}}
+                                onSubmitEditing={() => {this.ThirdTextInput.focus()}}
                                 onChangeText={(hallName) => this.setState({ hallName })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
                             </View>
                         </View>
-{/* 
-                        <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>سعر الصالة ($) : </StyledTextBold>
-                            <View style={styles.inputCont}>
-                            <TextInput
-                                placeholder="********"
-                                placeholderTextColor="#A2A2A2"
-                                underlineColorAndroid="transparent"
-                                returnKeyType={"next"}
-                                keyboardType="default"
-                                ref={(input) => {this.secondTextInput = input}}
-                                onSubmitEditing={() => {this.ThirdTextInput.focus()}}
-                                onChangeText={(hallPrice) => this.setState({ hallPrice })}
-                                blurOnSubmit={false}
-                                style={styles.Input}
-                            />
-                            </View>
-                        </View> */}
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["hallName"]}</StyledText>
+
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>العنوان : </StyledTextBold>
@@ -169,7 +182,7 @@ export default class AddHallScreen extends Component {
                                 returnKeyType={"next"}
                                 keyboardType="default"
                                 ref={(input) => {this.ThirdTextInput = input}}
-                                onSubmitEditing={() => {this.FourthTextInput.focus()}}
+                                onSubmitEditing={() => {this.SixthTextInput.focus()}}
                                 onChangeText={(hallAddress) => this.setState({ hallAddress })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
@@ -177,41 +190,8 @@ export default class AddHallScreen extends Component {
                             </View>
                         </View>
 
-                        {/* <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>عدد القاعات : </StyledTextBold>
-                            <View style={styles.inputCont}>
-                            <TextInput
-                                placeholder="********"
-                                placeholderTextColor="#A2A2A2"
-                                underlineColorAndroid="transparent"
-                                returnKeyType={"next"}
-                                keyboardType="default"
-                                ref={(input) => {this.FourthTextInput = input}}
-                                onSubmitEditing={() => {this.FifthTextInput.focus()}}
-                                onChangeText={(hallCount) => this.setState({ hallCount })}
-                                blurOnSubmit={false}
-                                style={styles.Input}
-                            />
-                            </View>
-                        </View> */}
-
-                        {/* <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>عدد الأفراد المحتملين : </StyledTextBold>
-                            <View style={styles.inputCont}>
-                            <TextInput
-                                placeholder="********"
-                                placeholderTextColor="#A2A2A2"
-                                underlineColorAndroid="transparent"
-                                returnKeyType={"next"}
-                                keyboardType="default"
-                                ref={(input) => {this.FifthTextInput = input}}
-                                onSubmitEditing={() => {this.SixthTextInput.focus()}}
-                                onChangeText={(hallPersons) => this.setState({ hallPersons })}
-                                blurOnSubmit={false}
-                                style={styles.Input}
-                            />
-                            </View>
-                        </View> */}
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["hallAddress"]}</StyledText>
+                      
                     
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الوصف : </StyledTextBold>
@@ -231,6 +211,9 @@ export default class AddHallScreen extends Component {
                             />
                             </View>
                         </View>
+
+                      <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["description"]}</StyledText>
+
                     </View>
 
                     <View style={styles.RegisterButtonCont}>
@@ -258,6 +241,8 @@ export default class AddHallScreen extends Component {
             hallDescription:this.state.hallDescription,
             photos:this.state.photos,
         }
-        this.props.navigation.navigate('AddHallStep2Screen',{firstInfo:firstStep})
+       
+      
+            this.props.navigation.navigate('AddHallStep2Screen',{firstInfo:firstStep})
     }
 }

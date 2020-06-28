@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import {FontAwesome,Ionicons} from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import * as firebase from 'firebase';
 
 export default class AddHallStep3Screen extends Component {
     constructor(props) {
@@ -20,12 +21,18 @@ export default class AddHallStep3Screen extends Component {
             ownerName:'',
             ownerEmail:'',
             ownerPhone:'',
+            userId:'',
+            errors:{}
         }
     }
 
 
     // للتجربة عشان نطبع الداتا بالتيرمينال 
     componentDidMount(){
+        const currentUser = firebase.auth().currentUser;
+        if(currentUser != null) {
+           this.setState({userId:currentUser.uid});
+        }
         console.log(this.props.navigation.getParam('firstInfo'))
         console.log(this.props.navigation.getParam('secInfo'))
     }
@@ -55,7 +62,48 @@ export default class AddHallStep3Screen extends Component {
         }
     }
 
+    validation() {
+        let isValid = true;
+        const {ownerName,ownerPhone,ownerEmail,ownerPhotos,errors} = this.state;
+        if (!ownerName) {
+            isValid = false;
+            errors["ownerName"] = "الرجاء ادخال اسمك"
+        }
+
+        if (!ownerPhone) {
+            isValid = false;
+            errors["ownerPhone"] = "الرجاء ادخال رقم هاتفك"
+        }
+
+        if (!ownerEmail) {
+            isValid = false;
+            errors["ownerEmail"] = "الرجاء ادخال بريدك الإلكتروني"
+        }
+
+        if(!ownerEmail.match(/[^\d][\w.]+@\w+(\.[A-Za-z]+){1,2}/g)){
+            isValid = false;
+            errors["ownerEmail"] = "البريد الالكتروني الذي أدخلته غير صحيح";
+              //add Error message
+          }
+      
+          if (!ownerPhone.match(/[0-9]{10}/)){
+            isValid = false;
+            errors["ownerPhone"] = "رقم الهاتف الذي أدخلته غير صحيح";
+              //add Error message
+          }
+
+        if (ownerPhotos.length === 0) {
+            isValid = false;
+            errors["photoError"] = "الرجاء اختيار صورة للصالة"
+        }
+
+        this.setState({errors});
+        return isValid;
+
+    }
+
     render() {
+        const {errors} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -127,6 +175,10 @@ export default class AddHallStep3Screen extends Component {
                         </ScrollView>
                         )}
 
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["photoError"]}
+                        </StyledText>
+
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>اسم صاحب الصالة : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -143,6 +195,10 @@ export default class AddHallStep3Screen extends Component {
                             />
                             </View>
                         </View>
+
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["ownerName"]}
+                        </StyledText>
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>رقم الجوال : </StyledTextBold>
@@ -161,6 +217,10 @@ export default class AddHallStep3Screen extends Component {
                             />
                             </View>
                         </View>
+
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["ownerPhone"]}
+                        </StyledText>
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الايميل : </StyledTextBold>
@@ -181,7 +241,10 @@ export default class AddHallStep3Screen extends Component {
                         </View>
                     </View>
 
-                    {/* <View style={[styles.RegisterButtonCont,{marginTop: 100}]}> */}
+                    <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["ownerEmail"]}
+                    </StyledText>
+
                     <View style={styles.RegisterButtonCont}>
                         <TouchableOpacity activeOpacity={0.5} style={styles.LoginTouch}
                           onPress={() => {this.doneAddHall()}}
@@ -200,12 +263,23 @@ export default class AddHallStep3Screen extends Component {
     }
 
     doneAddHall(){
+        const {userId,ownerName,ownerPhone,ownerEmail,ownerPhotos} = this.state;
         let fisrtStep = this.props.navigation.getParam('firstInfo')
         let secStep = this.props.navigation.getParam('secInfo')
-
-        //
-
+        let thirdStep = {ownerName,ownerEmail,ownerPhone,ownerPhotos}
+        let addHallRequest = {userId,...fisrtStep,...secStep,...thirdStep};
+        if(this.validation()){
+            const ref = firebase.firestore().collection('requests').add(addHallRequest)
+                .then(function(docRef) {
+                    this.props.navigation.navigate('AddHallDoneScreen')
+                })
+                .catch(function(error) {
+                    console.error("Error adding document: ", error);
+                    alert('Something went wrong');
+                });
+            
+        }
         
-        this.props.navigation.navigate('AddHallDoneScreen')
+       
     }
 }

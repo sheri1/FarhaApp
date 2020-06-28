@@ -21,7 +21,7 @@ export default class AddHallStep2Screen extends Component {
             servicePrice:"",
 
             step2:true,
-
+            errors:{},
             freeService:false,
             paidService:true,
             photos:[],
@@ -68,7 +68,48 @@ export default class AddHallStep2Screen extends Component {
         }
     }
 
+
+    validation() {
+        let isValid = true;
+        const {roomName,roomPrice,roomPersons,serviceName,servicePrice,photos,errors} = this.state;
+        if (!roomName) {
+            isValid = false;
+            errors["roomName"] = "الرجاء ادخال اسم القاعة"
+        }
+
+        if (!roomPrice) {
+            isValid = false;
+            errors["roomPrice"] = "الرجاء ادخال سعر حجز القاعة"
+        }
+
+        if (!roomPersons) {
+            isValid = false;
+            errors["roomPersons"] = "الرجاء ادخال عدد الأشخاص المحتملين"
+        }
+
+        if (!serviceName) {
+            isValid = false;
+            errors["serviceName"] = "الرجاء ادخال اسم الخدمة"
+        }
+
+        if (!servicePrice) {
+            isValid = false;
+            errors["servicePrice"] = "الرجاء ادخال سعر الخدمة"
+        }
+
+
+        if (photos.length === 0) {
+            isValid = false;
+            errors["photoError"] = "الرجاء اختيار صورة للصالة"
+        }
+
+        this.setState({errors});
+        return isValid;
+
+    }
+
     render() {
+        const {errors} = this.state;
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -141,6 +182,10 @@ export default class AddHallStep2Screen extends Component {
                         </ScrollView>
                         )}
 
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["photoError"]}
+                        </StyledText>
+                        
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>اسم القاعة : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -158,6 +203,12 @@ export default class AddHallStep2Screen extends Component {
                             </View>
                         </View>
 
+                        
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["roomName"]}
+                        </StyledText>
+                        
+
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>سعر القاعة ($) : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -166,15 +217,21 @@ export default class AddHallStep2Screen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="default"
+                                keyboardType="phone-pad"
                                 ref={(input) => {this.secondTextInput = input}}
-                                onSubmitEditing={() => {this.ThirdTextInput.focus()}}
+                                onSubmitEditing={() => {this.thirdTextInput.focus()}}
                                 onChangeText={(roomPrice) => this.setState({ roomPrice })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
                             </View>
                         </View>
+
+                        
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["roomPrice"]}
+                        </StyledText>
+                        
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>عدد الأفراد المحتملين : </StyledTextBold>
@@ -184,9 +241,9 @@ export default class AddHallStep2Screen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="default"
-                                ref={(input) => {this.FifthTextInput = input}}
-                                onSubmitEditing={() => {this.SixthTextInput.focus()}}
+                                keyboardType="phone-pad"
+                                ref={(input) => {this.thirdTextInput = input}}
+                                onSubmitEditing={() => {this.fourthTextInput.focus()}}
                                 onChangeText={(roomPersons) => this.setState({ roomPersons })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
@@ -194,6 +251,11 @@ export default class AddHallStep2Screen extends Component {
                             </View>
                         </View>
 
+
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["roomPersons"]}
+                        </StyledText>
+                        
 
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>الخدمات :</StyledTextBold>
@@ -204,13 +266,20 @@ export default class AddHallStep2Screen extends Component {
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
                                 keyboardType="default"
-                                onSubmitEditing={() => {this.secondTextInput.focus()}}
+                                ref={(input) => {this.fourthTextInput = input}}
+                                onSubmitEditing={() => {this.fifthTextInput.focus()}}
                                 onChangeText={(serviceName) => this.setState({ serviceName })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
                             />
                             </View>
                         </View>
+
+                        
+                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["serviceName"]}
+                        </StyledText>
+                        
 
                         <View style={[styles.InputContainer2,{paddingRight:0,paddingLeft:0}]}>
                             <View style={[styles.inputCont,{backgroundColor:'#fff'}]}>
@@ -232,6 +301,8 @@ export default class AddHallStep2Screen extends Component {
                             </View>
                         </View>
 
+                        
+
                         <View style={styles.InputContainer2}>
                             <StyledTextBold style={styles.InputContainer2Tilte}>سعر الخدمة ($) : </StyledTextBold>
                             <View style={styles.inputCont}>
@@ -240,8 +311,8 @@ export default class AddHallStep2Screen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="default"
-                                ref={(input) => {this.secondTextInput = input}}
+                                keyboardType="phone-pad"
+                                ref={(input) => {this.fifthTextInput = input}}
                                 onSubmitEditing={() => {this.nextAddHall()}}
                                 onChangeText={(servicePrice) => this.setState({ servicePrice })}
                                 blurOnSubmit={false}
@@ -250,6 +321,10 @@ export default class AddHallStep2Screen extends Component {
                             </View>
                         </View>
                     </View>
+
+                    <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>
+                            {errors["servicePrice"]}
+                    </StyledText>
 
                     {/* <View style={[styles.RegisterButtonCont,{marginTop:70}]}> */}
                     <View style={styles.RegisterButtonCont}>
@@ -277,8 +352,14 @@ export default class AddHallStep2Screen extends Component {
             serviceName:this.state.serviceName,
             servicePrice:this.state.servicePrice,
             photos:this.state.photos,
+            freeService:this.state.freeService,
+            paidService:this.state.paidService
         }
-        this.props.navigation.navigate('AddHallStep3Screen',
+        
+        if(this.validation()){
+            this.props.navigation.navigate('AddHallStep3Screen',
             {firstInfo:this.props.navigation.getParam('firstInfo'),secInfo:secStep})
+        }
+        
     }
 }
