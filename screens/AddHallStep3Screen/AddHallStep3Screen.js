@@ -22,7 +22,10 @@ export default class AddHallStep3Screen extends Component {
             ownerEmail:'',
             ownerPhone:'',
             userId:'',
-            errors:{}
+            errors:{},
+            hallImgURL: '',
+            roomImgURL: '',
+            managerImgURL: ''
         }
     }
 
@@ -33,8 +36,6 @@ export default class AddHallStep3Screen extends Component {
         if(currentUser != null) {
            this.setState({userId:currentUser.uid});
         }
-        console.log(this.props.navigation.getParam('firstInfo'))
-        console.log(this.props.navigation.getParam('secInfo'))
     }
     //
 
@@ -44,10 +45,61 @@ export default class AddHallStep3Screen extends Component {
             mediaTypes: "Images"
         }).then((result) => {
             if (!result.cancelled) {
-                const {ownerPhotos} = this.state
+                const {ownerPhotos} = this.state;
+                const path = result.uri;
                 ownerPhotos.push({path: result.uri})
                 this.setState({ownerPhotos, imagesScrollVisibileOwner: true})
+                var imgName = 'manager' + new Date().getTime(); 
+                console.log(path);               
+                this.uploadImage(path,imgName);
+                let hallImage = this.props.navigation.getParam('firstInfo').hallPhotos[0]["path"]
+                var hallImg = 'hall' + new Date().getTime();          
+                console.log(hallImage);               
+                this.uploadImage2(hallImage,hallImg);
+                var roomPath =this.props.navigation.getParam('secInfo').roomPhotos[0]["path"] 
+                var roomImg = 'room' + new Date().getTime();       
+                console.log(roomPath)         
+                this.uploadImage3(roomPath,roomImg);
             }
+        })
+    }
+
+    uploadImage = async (path, imageName) => {
+        const response = await fetch(path);
+        const blob = await response.blob();
+    
+        const ref = firebase.storage().ref().child("requests/" + imageName);
+        return ref.put(blob).then(() => { //After store the image -> get the url of it 
+                ref.getDownloadURL()
+                .then(url=>{
+                    this.setState({managerImgURL:url});
+                })
+        })
+    }
+
+    uploadImage2 = async (path, imageName) => {
+        const response = await fetch(path);
+        const blob = await response.blob();
+    
+        const ref = firebase.storage().ref().child("requests/" + imageName);
+        return ref.put(blob).then(() => { //After store the image -> get the url of it 
+                ref.getDownloadURL()
+                .then(url=>{
+                    this.setState({hallImgURL:url});
+                })
+        })
+    }
+
+    uploadImage3 = async (path, imageName) => {
+        const response = await fetch(path);
+        const blob = await response.blob();
+    
+        const ref = firebase.storage().ref().child("requests/" + imageName);
+        return ref.put(blob).then(() => { //After store the image -> get the url of it 
+                ref.getDownloadURL()
+                .then(url=>{
+                    this.setState({roomImgURL:url});
+                })
         })
     }
 
@@ -263,21 +315,24 @@ export default class AddHallStep3Screen extends Component {
     }
 
     doneAddHall(){
-        const {userId,ownerName,ownerPhone,ownerEmail,ownerPhotos} = this.state;
+        const {userId,ownerName,ownerPhone,ownerEmail,ownerPhotos,hallImgURL,roomImgURL,managerImgURL} = this.state;
         let fisrtStep = this.props.navigation.getParam('firstInfo')
         let secStep = this.props.navigation.getParam('secInfo')
-        let thirdStep = {ownerName,ownerEmail,ownerPhone,ownerPhotos}
+        let thirdStep = {ownerName,ownerEmail,ownerPhone,ownerPhotos,hallImgURL,roomImgURL,managerImgURL}
         let addHallRequest = {userId,...fisrtStep,...secStep,...thirdStep};
         if(this.validation()){
             const ref = firebase.firestore().collection('requests').add(addHallRequest)
                 .then(function(docRef) {
-                    this.props.navigation.navigate('AddHallDoneScreen')
+
                 })
                 .catch(function(error) {
                     console.error("Error adding document: ", error);
                     alert('Something went wrong');
                 });
-            
+
+                setTimeout(()=> {
+                this.props.navigation.navigate('AddHallDoneScreen');
+                },5500);
         }
         
        

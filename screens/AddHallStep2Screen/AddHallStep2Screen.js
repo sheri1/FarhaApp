@@ -351,7 +351,7 @@ export default class AddHallStep2Screen extends Component {
             roomPersons:this.state.roomPersons,
             serviceName:this.state.serviceName,
             servicePrice:this.state.servicePrice,
-            photos:this.state.photos,
+            roomPhotos:this.state.photos,
             freeService:this.state.freeService,
             paidService:this.state.paidService
         }

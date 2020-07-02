@@ -239,7 +239,7 @@ export default class AddHallScreen extends Component {
             hallName:this.state.hallName,
             hallAddress:this.state.hallAddress,
             hallDescription:this.state.hallDescription,
-            photos:this.state.photos,
+            hallPhotos:this.state.photos,
         }
        
       
