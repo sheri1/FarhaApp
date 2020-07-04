@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity} from "react-native";
+import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity,Picker} from "react-native";
 import styles from "./AddHallScreenStyle";
 import Constants from 'expo-constants'
 import StyledText from '../../components/StyledTexts/StyledText'
@@ -17,7 +17,9 @@ export default class AddHallScreen extends Component {
             hallName:"",
             hallAddress:"",
             hallDescription:"",
+            numOfRoom: "",
             photos:[],
+            category: "غزة",
             imagesScrollVisibile: false,
             errors: {},
             step1:true,
@@ -50,7 +52,7 @@ export default class AddHallScreen extends Component {
 
     validation() {
         let isValid = true;
-        const {hallName,hallAddress,hallDescription,photos,errors} = this.state;
+        const {hallName,hallAddress,hallDescription,photos,errors,numOfRoom} = this.state;
         if (!hallName) {
             isValid = false;
             errors["hallName"] = "الرجاء ادخال اسم الصالة"
@@ -66,6 +68,10 @@ export default class AddHallScreen extends Component {
             errors["description"] = "الرجاء ادخال وصف عن الصالة"
         }
 
+        if (!numOfRoom) {
+            isValid = false;
+            errors["numOfRoom"] = "الرجاء إدخال عدد قاعات الصالة"
+        }
         if (photos.length === 0) {
             isValid = false;
             errors["photoError"] = "الرجاء اختيار صورة للصالة"
@@ -171,9 +177,26 @@ export default class AddHallScreen extends Component {
                         </View>
                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["hallName"]}</StyledText>
 
+                       <View style={styles.InputContainer2}>
+                       <StyledTextBold style={styles.InputContainer2Tilte}>موقع الصالة : </StyledTextBold>
+                       <View style={styles.pickerStyle}>
+                            <Picker
+                            mode="dropdown"
+                            selectedValue={this.state.category}
+                            style={styles.Input}
+                            onValueChange={(category, itemIndex) => this.setState({category})}
+                            >
+                            <Picker.Item label="مدينة غزة" value="غزة" style={{textAlign: 'right'}} />
+                            <Picker.Item label="رفح" value="رفح" style={{textAlign: 'right'}} />
+                            <Picker.Item label="خانيونس" value="خانيونس" style={{textAlign: 'right'}} />
+                            <Picker.Item label="الوسطى" value="الوسطى" style={{textAlign: 'right'}} />
+
+                            </Picker>
+                            </View>
+                        </View>
 
                         <View style={styles.InputContainer2}>
-                            <StyledTextBold style={styles.InputContainer2Tilte}>العنوان : </StyledTextBold>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>العنوان بالتفصيل : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
                                 placeholder="دير البلح-البلد"
@@ -203,7 +226,7 @@ export default class AddHallScreen extends Component {
                                 returnKeyType={"next"}
                                 keyboardType="default"
                                 ref={(input) => {this.SixthTextInput = input}}
-                                onSubmitEditing={() => {this.nextAddHall()}}
+                                onSubmitEditing={() => {this.SeventhTextInput.focus()}}
                                 onChangeText={(hallDescription) => this.setState({ hallDescription })}
                                 blurOnSubmit={false}
                                 multiline
@@ -213,6 +236,27 @@ export default class AddHallScreen extends Component {
                         </View>
 
                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["description"]}</StyledText>
+
+
+                      <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>عدد القاعات : </StyledTextBold>
+                            <View style={styles.inputCont}>
+                            <TextInput
+                                placeholder="عدد قاعات الصالة"
+                                placeholderTextColor="#A2A2A2"
+                                underlineColorAndroid="transparent"
+                                returnKeyType={"next"}
+                                keyboardType="phone-pad"
+                                ref={(input) => {this.SeventhTextInput = input}}
+                                onSubmitEditing={() => {this.nextAddHall()}}
+                                onChangeText={(numOfRoom) => this.setState({ numOfRoom })}
+                                blurOnSubmit={false}
+                                style={styles.Input}
+                            />
+                            </View>
+                        </View>
+
+                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["numOfRoom"]}</StyledText>
 
                     </View>
 
@@ -240,6 +284,8 @@ export default class AddHallScreen extends Component {
             hallAddress:this.state.hallAddress,
             hallDescription:this.state.hallDescription,
             hallPhotos:this.state.photos,
+            numOfRoom:this.state.numOfRoom,
+            category:this.state.category
         }
        
       
