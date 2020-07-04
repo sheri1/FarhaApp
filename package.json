@@ -25,6 +25,7 @@
     "react": "16.9.0",
     "react-dom": "16.9.0",
     "react-native": "0.61.4",
+    "react-native-calendars": "^1.300.0",
     "react-native-confirmation-code-field": "^3.9.0",
     "react-native-dropdown-button": "^1.1.0",
     "react-native-dropdown-menu": "^2.0.0",

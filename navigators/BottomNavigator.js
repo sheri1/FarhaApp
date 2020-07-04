@@ -14,9 +14,9 @@ import { Feather as Icon } from "@expo/vector-icons";
 HomeStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
   let routeName = navigation.state.routes[navigation.state.index].routeName;
-  // if ( routeName == "Detail" || routeName == "Search" || routeName == "StoreScreen"|| routeName == "OrderScreen"){
-  //   tabBarVisible = false;
-  // }
+  if ( routeName == "HallDetailScreen" ){
+    tabBarVisible = false;
+  }
   return {
     tabBarVisible,
     tabBarLabel: "الرئيسية",

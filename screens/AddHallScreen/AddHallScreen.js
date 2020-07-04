@@ -288,7 +288,8 @@ export default class AddHallScreen extends Component {
             category:this.state.category
         }
        
-      
+        if(this.validation()){
             this.props.navigation.navigate('AddHallStep2Screen',{firstInfo:firstStep})
+        }
     }
 }

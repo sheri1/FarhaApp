@@ -16,7 +16,8 @@ export default class OneHallComponent extends React.Component {
         <>
         {sectionDetailList.map((item,index)=>{
                 return(
-                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}>
+                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}
+                    onPress={() => this.props.navigation.navigate('HallDetailScreen')}>
                         <View style={styles.ImageCont}>
                             <Image source={item.image} style={{width:120,height:100}} resizeMode='contain'/>
                             {item.discount &&

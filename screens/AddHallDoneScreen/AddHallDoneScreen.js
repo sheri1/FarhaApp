@@ -30,11 +30,10 @@ export default class AddHallDoneScreen extends Component {
                 >   
                     <Image source={require('../../assets/images/sucessRegister.png')} />
                     <StyledText style={styles.thanks}>نجاح</StyledText>
-                    <StyledText style={styles.try}>تم اضافة الصالة بنجاح</StyledText>
+                    <StyledText style={styles.try}> تم ارسال طلب الانضمام يرجى الانتظار ليتم مراجعة الطلب</StyledText>
 
                     <TouchableOpacity
-                        onPress={()=> this.props.navigation.navigate('Profile')}
-                    >
+                        onPress={()=> this.props.navigation.navigate('Profile')} >
                         <StyledText style={styles.move}>الانتقال للملف الشخصي</StyledText>
                     </TouchableOpacity>
                 
