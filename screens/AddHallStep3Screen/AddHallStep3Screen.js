@@ -319,7 +319,7 @@ export default class AddHallStep3Screen extends Component {
         let fisrtStep = this.props.navigation.getParam('firstInfo')
         let secStep = this.props.navigation.getParam('secInfo')
         let thirdStep = {ownerName,ownerEmail,ownerPhone,ownerPhotos,hallImgURL,roomImgURL,managerImgURL}
-        let addHallRequest = {userId,...fisrtStep,...secStep,...thirdStep};
+        let addHallRequest = {userId,...fisrtStep,...secStep,...thirdStep,status:"Suspended"};
         if(this.validation()){
             const ref = firebase.firestore().collection('requests').add(addHallRequest)
                 .then(function(docRef) {
