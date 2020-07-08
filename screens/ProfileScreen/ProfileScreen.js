@@ -32,6 +32,7 @@ class ProfileScreen extends Component {
 
     render() {
         const {user,photoURL} = this.state;
+        console.log(user);
         return (
         <View style={styles.containerStyle}>          
             <View style={[styles.topBack,{zIndex:-1}]}>
@@ -99,11 +100,20 @@ class ProfileScreen extends Component {
                     </View>
 
                     <View style={styles.joinCont}>
+                        {user.manager ? 
                         <TouchableOpacity style={styles.joinTouch}
-                            onPress={() => this.props.navigation.navigate('AddHallScreen')}
+                            onPress={() => this.props.navigation.navigate('AddHallStep2Screen')}
                         >
-                            <StyledText style={styles.joinTXT}>انضم لأصحاب الصالات</StyledText>
+                            <StyledText style={styles.joinTXT}>أضف صالة جديدة</StyledText>
                         </TouchableOpacity>
+
+                        :
+                        <TouchableOpacity style={styles.joinTouch}
+                        onPress={() => this.props.navigation.navigate('AddHallScreen')}
+                    >
+                        <StyledText style={styles.joinTXT}>انضم لأصحاب الصالات</StyledText>
+                    </TouchableOpacity>
+                        }
                     </View>
                 </View>
             </ScrollView>
