@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity} from "react-native";
-import styles from "./AddHallDoneScreenStyle";
+import styles from "./AddRoomDoneScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 
-export default class AddHallDoneScreen extends Component {
+export default class AddRoomDoneScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +30,7 @@ export default class AddHallDoneScreen extends Component {
                 >   
                     <Image source={require('../../assets/images/sucessRegister.png')} />
                     <StyledText style={styles.thanks}>نجاح</StyledText>
-                    <StyledText style={styles.try}> تم الارسال بنجاح يرجى الانتظار ليتم مراجعة الطلب</StyledText>
+                    <StyledText style={styles.try}>تم إضافة القاعة بنجاح </StyledText>
 
                     <TouchableOpacity
                         onPress={()=> this.props.navigation.navigate('Profile')} >

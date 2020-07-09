@@ -102,7 +102,8 @@ class ProfileScreen extends Component {
                     <View style={styles.joinCont}>
                         {user.manager ? 
                         <TouchableOpacity style={styles.joinTouch}
-                            onPress={() => this.props.navigation.navigate('AddHallStep2Screen')}
+                        //    onPress={() => this.props.navigation.navigate('AddRoomScreen')}
+                        onPress={() => this.props.navigation.navigate('AddHallScreen')}
                         >
                             <StyledText style={styles.joinTXT}>أضف صالة جديدة</StyledText>
                         </TouchableOpacity>

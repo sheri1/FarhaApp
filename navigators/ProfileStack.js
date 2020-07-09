@@ -7,6 +7,8 @@ import AddHallScreen from '../screens/AddHallScreen';
 import AddHallStep2Screen from '../screens/AddHallStep2Screen';
 import AddHallStep3Screen from '../screens/AddHallStep3Screen';
 import AddHallDoneScreen from '../screens/AddHallDoneScreen';
+import AddRoomScreen from '../screens/AddRoomScreen';
+import AddRoomDoneScreen from '../screens/AddRoomDoneScreen';
 
 const ProfileStack = createStackNavigator(
     {
@@ -59,6 +61,21 @@ const ProfileStack = createStackNavigator(
                 header: null,
             }
         },
+        AddRoomScreen:{
+            screen:AddRoomScreen,
+            navigationOptions: {
+                title: "AddRoomScreen",
+                header: null,
+            }
+        },
+        AddRoomDoneScreen:{
+            screen:AddRoomDoneScreen,
+            navigationOptions: {
+                title: "AddRoomDoneScreen",
+                header: null,
+            }
+        },
+
     },
     {
       initialRouteName: "Profile"
