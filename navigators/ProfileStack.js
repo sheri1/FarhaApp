@@ -9,7 +9,7 @@ import AddHallStep3Screen from '../screens/AddHallStep3Screen';
 import AddHallDoneScreen from '../screens/AddHallDoneScreen';
 import AddRoomScreen from '../screens/AddRoomScreen';
 import AddRoomDoneScreen from '../screens/AddRoomDoneScreen';
-
+import ManagerHallsScreen from '../screens/ManagerHallsScreen';
 const ProfileStack = createStackNavigator(
     {
         Profile: {
@@ -75,6 +75,14 @@ const ProfileStack = createStackNavigator(
                 header: null,
             }
         },
+
+        ManagerHallsScreen:{
+            screen:ManagerHallsScreen,
+            navigationOptions: {
+                title: "ManagerHallsScreen",
+                header: null,
+            }
+        }
 
     },
     {

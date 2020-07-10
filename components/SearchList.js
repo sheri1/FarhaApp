@@ -11,7 +11,8 @@ export default class SearchList extends React.Component {
     }
 
     render() {
-        let searchList = this.props.details
+        let searchList = this.props.details;
+
         return (
         <>
             <FlatList
@@ -23,9 +24,10 @@ export default class SearchList extends React.Component {
                 extraData={this.props}
                 numColumns={2}
                 renderItem={({item, index})=>(
-                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}>
+                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}
+                    onPress={() => this.props.navigation.navigate('HallDetailScreen',{id:item.id})}>
                         <View style={styles.ImageCont}>
-                            <Image source={item.image} style={{width:120,height:100}} resizeMode='contain'/>
+                            <Image source={item.uri ? {uri:item.image} : item.image} style={{width:120,height:100}} resizeMode='contain'/>
                             {item.discount &&
                             <View style={styles.discount}>
                                 <StyledText style={styles.discountTXT}>عرض {item.discount}</StyledText>

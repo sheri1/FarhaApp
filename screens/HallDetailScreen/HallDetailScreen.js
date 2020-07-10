@@ -7,8 +7,9 @@ import ViewPager from '@react-native-community/viewpager';
 import { Entypo, FontAwesome, AntDesign } from '@expo/vector-icons'; 
 import {Calendar} from 'react-native-calendars';
 import { Rating } from 'react-native-elements';
-
-export default class HallDetailScreen extends Component {
+import { withFirebaseHOC } from '../../config/Firebase'
+import * as firebase from 'firebase';
+class HallDetailScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,18 +23,152 @@ export default class HallDetailScreen extends Component {
                 location:'دير البلح - البلد',
                 description:`يتم جمع وسائل التواصل المتاحة التي من ف شأنها تسهيل التواصل وإنشاء وتأكيد عضوية الاشتراك، على سبيل المثال وليس الحصر عل سبيل المثال وليس الحصر`,
             },
+            roomDetails: [
+                {
+                    name: 'اسم القاعة',
+                    price: '2000$',
+                    numOfPeople: '200',
+                    services:''
+                }
+            ],
+            roomNum:1,
             ordersTap:[
                 {id:0,name:'معلومات التواصل',isSelect:false},
-                {id:1,name:'القاعة الثانية',isSelect:false},
-                {id:2,name:'القاعة الأولى',isSelect:true},
+               
             ],
-            showFilter:'القاعة الأولى',
+            managerDetails: {
+                name: 'اسم المالك',
+                phone: '059000000',
+                email: 'manager@gmail.com'
+            },
+            showFilter:'القاعة رقم 1',
             modalVisible:false,
-            selectedDate:''
+            selectedDate:'',
+            user: {},
+            hallId:null,
+            ownerId: null
         }
     }
     
+    componentDidMount() {
+        const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            this.props.firebase.getUserDocument(currentUser.uid)
+                .then(userData=> {
+                    this.setState({user:userData});
+                })
+                .catch(error=>console.log('e',error))
+        }
+
+        const id = this.props.navigation.getParam('id');
+        this.setState({hallId:id});
+
+      
+        const hallDoc =  firebase
+            .firestore()
+            .collection('halls')
+            .doc(id)
+            .get()
+            .then(doc => {
+                if (doc.exists) {
+                    const docData = doc.data();
+                    this.setState({
+                        roomNum: docData.roomNum,
+                        ownerId: docData.owner
+                    }
+                    );
+                    const hallData = {
+                        name: docData.name,
+                        location: docData.address,
+                        description: docData.description,
+        
+                    }
+
+                    this.setState(prevState => ({
+                        hallDetail: {...prevState.hallDetail,...hallData}
+                      }))
+
+                    const roomTabs = Array.from({length: docData.roomNum}, (v, i) => i);
+                    
+                    
+                    const tabs = roomTabs.map((item)=> {
+                        const number = item + 1;
+                        return{
+                            // {id:0,name:'معلومات التواصل',isSelect:false},
+                            id : item+1 ,
+                            name: "القاعة رقم " + number,
+                            isSelect: number === 1 ? true : false
+                        }
+                    });
+                    console.log(tabs)
+                    this.setState(prevState => ({
+                        ordersTap: [...prevState.ordersTap, ...tabs]
+                    }))
+
+              
+
+                } else {
+            
+                    console.log("No such document!");
+                }
+            }).catch(function(error) {
+                console.log("Error getting document:", error);
+            });
+
+        const roomsRef = firebase.firestore().collection("rooms");
+        const query = roomsRef.where("hallId", "==",id)
+              .get().then((querySnapshot)  => {
+                  querySnapshot.forEach((doc) => {
+                    const roomData = doc.data();
+                    let roomListData = [];
+                    roomListData.push(
+                      
+                      {id:doc.id,
+                        // image: roomData.hallImage,
+                        name: roomData.name,
+                        numOfPeople: roomData.numberOfPeople,
+                        price: roomData.price,
+                      
+                        }
+                    )
+                    this.setState({roomDetails: this.state.roomDetails.map(item => {
+                        return ({
+                            name: roomData.name,
+                        numOfPeople: roomData.numberOfPeople,
+                        price: roomData.price + '$',
+                        })
+
+                    })})
+                      
+                    
+                });
+              })
+              .catch(function(error) {
+                console.log("Error getting documents: ", error);
+            });
+
+
+           setTimeout(()=> {
+            this.props.firebase.getUserDocument(this.state.ownerId)
+            .then(userData=> {
+                console.log(this.state.ownerId)
+                const managerInfo = {
+                    name : userData.displayName,
+                    phone : userData.businessPhone,
+                    email : userData.businessEmail
+                }
+                this.setState(prevState => ({
+                    managerDetails: {...prevState.managerDetails,...managerInfo}
+                  }))
+            })
+            .catch(error=>console.log('e',error))
+           },5000)
+            
+    }
+
+
     render() {
+        const {user,roomDetails,managerDetails} = this.state;
         return (
         <View style={styles.containerStyle}>        
             {/* <View style={styles.StatusBar}>
@@ -118,19 +253,19 @@ export default class HallDetailScreen extends Component {
                             </View>
                         </ScrollView>
 
-                        {this.state.showFilter === 'القاعة الأولى' && 
+                        {this.state.showFilter === 'القاعة رقم 1' && 
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
                                     <View style={styles.firstRowPrice}>
-                                        <StyledText style={styles.firstPrice}>200$</StyledText>
+                                        <StyledText style={styles.firstPrice}>{roomDetails[0].price}</StyledText>
                                     </View>
                                     <View style={styles.firstRowName}>
-                                        <StyledText style={styles.firstName}>اسم القاعة</StyledText>
+                                <StyledText style={styles.firstName}>{roomDetails[0].name}</StyledText>
                                     </View>
                                 </View>
 
                                 <View style={styles.capView}>
-                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى 300 شخص </StyledText>
+                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى {roomDetails[0].numOfPeople} شخص </StyledText>
                                 </View>
 
                                 <View style={styles.serviceView}>
@@ -172,7 +307,7 @@ export default class HallDetailScreen extends Component {
                             </View>
                         }
 
-                        {this.state.showFilter === 'القاعة الثانية' &&
+                        {this.state.showFilter === 'القاعة رقم 2' &&
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
                                     <View style={styles.firstRowPrice}>
@@ -230,17 +365,17 @@ export default class HallDetailScreen extends Component {
                             <View style={styles.ContactView}>
                                 <View style={styles.infoRowCont,{flexDirection:'row'}}>
                                     <View style={{flex:1}}>
-                                        <StyledText style={styles.infoName}>محمد أسامة</StyledText>
+                                        <StyledText style={styles.infoName}>{managerDetails.name}</StyledText>
                                     </View>
                                     <StyledText style={styles.infoName}>اسم المالك</StyledText>
                                 </View>
                                 <View style={styles.infoRowCont}>
                                     <View style={styles.infoRow}>
-                                        <StyledText style={styles.info}>0597777777</StyledText>
+                                        <StyledText style={styles.info}>{managerDetails.phone}</StyledText>
                                         <Entypo name="phone" size={24} color="#924480" />
                                     </View>
                                     <View style={styles.infoRow}>
-                                        <StyledText style={styles.info}>moh@test.com</StyledText>
+                                        <StyledText style={styles.info}>{managerDetails.email}</StyledText>
                                         <FontAwesome name="envelope" size={24} color="#924480" />
                                     </View>
                                 </View>
@@ -353,9 +488,19 @@ export default class HallDetailScreen extends Component {
 
                 </View>
             </ScrollView>
+            {user.manager  ? 
+            
+            <TouchableOpacity style={styles.minView} onPress={() => this.props.navigation.navigate('AddRoomScreen')}>
+                <StyledText style={styles.minTXT}>أضف قاعة جديدة</StyledText>
+            </TouchableOpacity>
+            :
+        
+
             <TouchableOpacity style={styles.minView} onPress={()=> this.setState({modalVisible:true})}>
                 <StyledText style={styles.minTXT}>الحجوزات</StyledText>
             </TouchableOpacity>
+
+}
         </View>
         )
     }
@@ -389,3 +534,6 @@ export default class HallDetailScreen extends Component {
         )
     }
 }
+
+
+export default withFirebaseHOC(HallDetailScreen);

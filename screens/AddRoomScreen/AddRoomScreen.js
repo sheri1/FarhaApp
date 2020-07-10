@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import {FontAwesome,Ionicons} from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import * as firebase from 'firebase/app'
 
 export default class AddRoomScreen extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ export default class AddRoomScreen extends Component {
             roomPersons:"",
             serviceName:"",
             servicePrice:"",
-
+            photoURL:"",
             // step2:true,
             errors:{},
             freeService:false,
@@ -43,10 +44,26 @@ export default class AddRoomScreen extends Component {
             mediaTypes: "Images"
         }).then((result) => {
             if (!result.cancelled) {
-                const {photos} = this.state
+                const {photos} = this.state;
+                const imgPath = result.uri;
                 photos.push({path: result.uri})
                 this.setState({photos, imagesScrollVisibile: true})
+                var imgName = new Date().getTime();                
+                this.uploadImage(imgPath,imgName);
             }
+        })
+    }
+
+    uploadImage = async (path, imageName) => {
+        const response = await fetch(path);
+        const blob = await response.blob();
+    
+        const ref = firebase.storage().ref().child("rooms/" + imageName);
+        return ref.put(blob).then(() => { //After store the image -> get the url of it 
+                ref.getDownloadURL()
+                .then(url=>{
+                    this.setState({photoURL:url});
+                })
         })
     }
 
@@ -334,9 +351,28 @@ export default class AddRoomScreen extends Component {
     }
     
     AddRoom(){
-        if(this.validation()){
-            this.props.navigation.navigate('AddRoomDoneScreen') 
+        const roomsData = { 
+            roomName:this.state.roomName,
+            roomPrice:this.state.roomPrice,
+            roomPersons:this.state.roomPersons,
+            serviceName:this.state.serviceName,
+            servicePrice:this.state.servicePrice,
+            roomImage:this.state.photoURL,
+            freeService:this.state.freeService,
+            paidService:this.state.paidService
         }
+        if(this.validation()){
+            const ref = firebase.firestore().collection('rooms').add(roomsData)
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
+                alert('Something went wrong');
+            });
+
+        }
+
+        
+        setTimeout(() => this.props.navigation.navigate('AddRoomDoneScreen') , 2000);
+        
         
     }
 }

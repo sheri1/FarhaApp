@@ -27,25 +27,25 @@ export default class SearchScreen extends Component {
       reginFilter:'الكل',
       searchList:[
         {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:true
+          location:'دير البلح',discount:null,isFav:true,uri:false
         },
         {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:false
+          location:'دير البلح',discount:'60%',isFav:false,uri:false
         },
         {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:true
+          location:'دير البلح',discount:null,isFav:true,uri:false
         },
         {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:false
+          location:'دير البلح',discount:'60%',isFav:false,uri:false
         },
         {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:false
+          location:'دير البلح',discount:null,isFav:false,uri:false
         },
         {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:true
+          location:'دير البلح',discount:'60%',isFav:true,uri:false
         },
         {id:6,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:false
+          location:'دير البلح',discount:null,isFav:false,uri:false
         },
       ],
       modalVisible:false,

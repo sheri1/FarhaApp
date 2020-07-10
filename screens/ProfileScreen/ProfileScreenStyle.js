@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 
     joinCont:{width:'100%',justifyContent:'center',alignItems:'center',marginTop:50},
     joinTouch:{width:'80%',justifyContent:'center',alignItems:'center',backgroundColor:'#924480',
-        borderRadius:30,height:50
+        borderRadius:30,height:50,marginBottom:5
     },
     joinTXT:{fontSize:16,color:'#fff'}
 });
