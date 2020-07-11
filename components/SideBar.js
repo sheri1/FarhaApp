@@ -4,6 +4,7 @@ import { ListItem, Icon, Body, Right, Left } from "native-base";
 import Text from "./StyledTexts/StyledText";
 import { FontAwesome, MaterialIcons, AntDesign,Feather,MaterialCommunityIcons} from "@expo/vector-icons";
 import StyledText from "./StyledTexts/StyledText";
+import { Ionicons } from '@expo/vector-icons';
 import * as firebase from "firebase";
 
 export default class SideBar extends React.Component {
@@ -12,7 +13,7 @@ export default class SideBar extends React.Component {
     this.state = {
       activeTintColor: "#3FE3EA",
       inactiveTintColor: "#242424", // #000
-      itemFlag:'Home'
+      itemFlag:'Home',
     };
   }
 
@@ -42,6 +43,23 @@ export default class SideBar extends React.Component {
               <MaterialCommunityIcons name='home-outline' style={{fontSize:20,textAlign: "center",color:'#924480'}}/>
             </Right>
           </ListItem>
+
+
+          <ListItem icon noBorder button={true} onPress={()=> this.itemClicked('OrderStack','order')}
+            style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
+            <Left>
+              <AntDesign name="left" size={20} color="black" />
+            </Left>
+            <Body>
+              <Text style={styles.firstItemTitle}>
+                طلباتي
+              </Text>
+            </Body>
+            <Right>
+            <Feather name="grid" size={20} color="#924480" />
+            </Right>
+          </ListItem>
+
 
           <ListItem icon noBorder button={true} onPress={()=> this.itemClicked('NotificationScreen','notifi')}
             style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
