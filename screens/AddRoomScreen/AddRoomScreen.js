@@ -26,8 +26,18 @@ export default class AddRoomScreen extends Component {
             freeService:false,
             paidService:true,
             photos:[],
+            hallId:null,
+            roomNumber:0
 
         }
+    }
+
+    componentDidMount() {
+        const id = this.props.navigation.getParam('id');
+        const roomNum = this.props.navigation.getParam('roomNum');
+        console.log('num' , roomNum);
+        this.setState({hallId:id,
+        roomNumber:roomNum});
     }
 
     chooseServiceType(t){
@@ -351,6 +361,8 @@ export default class AddRoomScreen extends Component {
     }
     
     AddRoom(){
+        const {hallId,roomNumber} = this.state;
+        
         const roomsData = { 
             roomName:this.state.roomName,
             roomPrice:this.state.roomPrice,
@@ -359,7 +371,8 @@ export default class AddRoomScreen extends Component {
             servicePrice:this.state.servicePrice,
             roomImage:this.state.photoURL,
             freeService:this.state.freeService,
-            paidService:this.state.paidService
+            paidService:this.state.paidService,
+            hallId: this.state.hallId
         }
         if(this.validation()){
             const ref = firebase.firestore().collection('rooms').add(roomsData)
@@ -367,7 +380,13 @@ export default class AddRoomScreen extends Component {
                 console.error("Error adding document: ", error);
                 alert('Something went wrong');
             });
+            
 
+            setTimeout( ()=> firebase.firestore().collection('halls').doc(hallId).update({
+                roomNum: roomNumber + 1,
+            })
+            .then(()=>console.log('done'))
+            .catch(e=>console.log(e)),2000);
         }
 
         

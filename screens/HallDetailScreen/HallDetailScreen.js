@@ -9,6 +9,7 @@ import {Calendar} from 'react-native-calendars';
 import { Rating } from 'react-native-elements';
 import { withFirebaseHOC } from '../../config/Firebase'
 import * as firebase from 'firebase';
+import { AppLoading } from "expo";
 class HallDetailScreen extends Component {
     constructor(props) {
         super(props);
@@ -41,12 +42,13 @@ class HallDetailScreen extends Component {
                 phone: '059000000',
                 email: 'manager@gmail.com'
             },
-            showFilter:'القاعة رقم 1',
+            showFilter: 1,
             modalVisible:false,
             selectedDate:'',
             user: {},
             hallId:null,
-            ownerId: null
+            ownerId: null,
+            isLoading:true
         }
     }
     
@@ -88,25 +90,24 @@ class HallDetailScreen extends Component {
                         hallDetail: {...prevState.hallDetail,...hallData}
                       }))
 
-                    const roomTabs = Array.from({length: docData.roomNum}, (v, i) => i);
+                      
+            const roomTabs = Array.from({length: this.state.roomNum}, (v, i) => i);
                     
                     
-                    const tabs = roomTabs.map((item)=> {
-                        const number = item + 1;
-                        return{
-                            // {id:0,name:'معلومات التواصل',isSelect:false},
-                            id : item+1 ,
-                            name: "القاعة رقم " + number,
-                            isSelect: number === 1 ? true : false
-                        }
-                    });
-                    console.log(tabs)
-                    this.setState(prevState => ({
-                        ordersTap: [...prevState.ordersTap, ...tabs]
-                    }))
+            const tabs = roomTabs.map((item)=> {
+                const number = item + 1;
+                return{
+                    // {id:0,name:'معلومات التواصل',isSelect:false},
+                    id : number ,
+                    name: "القاعة رقم " + number,
+                    isSelect: number === 1 ? true : false
+                }
+            });
 
-              
-
+            this.setState(prevState => ({
+                ordersTap: [...prevState.ordersTap, ...tabs]
+            }))
+                  
                 } else {
             
                     console.log("No such document!");
@@ -120,25 +121,29 @@ class HallDetailScreen extends Component {
               .get().then((querySnapshot)  => {
                   querySnapshot.forEach((doc) => {
                     const roomData = doc.data();
-                    let roomListData = [];
-                    roomListData.push(
+                    let roomListDetails = [];
+                    roomListDetails.push(
                       
-                      {id:doc.id,
+                      {
                         // image: roomData.hallImage,
-                        name: roomData.name,
-                        numOfPeople: roomData.numberOfPeople,
-                        price: roomData.price,
+                        name: roomData.roomName,
+                        numOfPeople: roomData.roomPersons,
+                        price: roomData.roomPrice,
                       
                         }
                     )
-                    this.setState({roomDetails: this.state.roomDetails.map(item => {
-                        return ({
-                            name: roomData.name,
-                        numOfPeople: roomData.numberOfPeople,
-                        price: roomData.price + '$',
-                        })
+                    var joined = this.state.roomDetails.concat(roomListDetails)
+                    this.setState({roomDetails:joined,
+                    isLoading:false})
 
-                    })})
+                    // this.setState({roomDetails: this.state.roomDetails.map(item => {
+                    //     return ({
+                    //         name: roomData.roomName,
+                    //         numOfPeople: roomData.roomPersons,
+                    //         price: roomData.roomPrice + '$',
+                    //     })
+
+                    // })})
                       
                     
                 });
@@ -147,6 +152,9 @@ class HallDetailScreen extends Component {
                 console.log("Error getting documents: ", error);
             });
 
+            
+          
+           
 
            setTimeout(()=> {
             this.props.firebase.getUserDocument(this.state.ownerId)
@@ -168,7 +176,12 @@ class HallDetailScreen extends Component {
 
 
     render() {
-        const {user,roomDetails,managerDetails} = this.state;
+        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter} = this.state;
+        if (isLoading) {
+            return (
+              <AppLoading />
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>        
             {/* <View style={styles.StatusBar}>
@@ -253,19 +266,39 @@ class HallDetailScreen extends Component {
                             </View>
                         </ScrollView>
 
-                        {this.state.showFilter === 'القاعة رقم 1' && 
+                        
+                        {showFilter === 0  ?  
+                            <View style={styles.ContactView}>
+                            <View style={styles.infoRowCont,{flexDirection:'row'}}>
+                                <View style={{flex:1}}>
+                                    <StyledText style={styles.infoName}>{managerDetails.name}</StyledText>
+                                </View>
+                                <StyledText style={styles.infoName}>اسم المالك</StyledText>
+                            </View>
+                            <View style={styles.infoRowCont}>
+                                <View style={styles.infoRow}>
+                                    <StyledText style={styles.info}>{managerDetails.phone}</StyledText>
+                                    <Entypo name="phone" size={24} color="#924480" />
+                                </View>
+                                <View style={styles.infoRow}>
+                                    <StyledText style={styles.info}>{managerDetails.email}</StyledText>
+                                    <FontAwesome name="envelope" size={24} color="#924480" />
+                                </View>
+                            </View>
+                        </View>
+                        :
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
                                     <View style={styles.firstRowPrice}>
-                                        <StyledText style={styles.firstPrice}>{roomDetails[0].price}</StyledText>
+                                        <StyledText style={styles.firstPrice}>{roomDetails[showFilter].price}</StyledText>
                                     </View>
                                     <View style={styles.firstRowName}>
-                                <StyledText style={styles.firstName}>{roomDetails[0].name}</StyledText>
+                                <StyledText style={styles.firstName}>{roomDetails[showFilter].name}</StyledText>
                                     </View>
                                 </View>
 
                                 <View style={styles.capView}>
-                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى {roomDetails[0].numOfPeople} شخص </StyledText>
+                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى {roomDetails[showFilter].numOfPeople} شخص </StyledText>
                                 </View>
 
                                 <View style={styles.serviceView}>
@@ -307,7 +340,7 @@ class HallDetailScreen extends Component {
                             </View>
                         }
 
-                        {this.state.showFilter === 'القاعة رقم 2' &&
+                        {/* {this.state.showFilter === 'القاعة رقم 2' &&
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
                                     <View style={styles.firstRowPrice}>
@@ -359,28 +392,9 @@ class HallDetailScreen extends Component {
                                 </View>
 
                             </View>
-                        }
+                        } */}
 
-                        {this.state.showFilter === 'معلومات التواصل' && 
-                            <View style={styles.ContactView}>
-                                <View style={styles.infoRowCont,{flexDirection:'row'}}>
-                                    <View style={{flex:1}}>
-                                        <StyledText style={styles.infoName}>{managerDetails.name}</StyledText>
-                                    </View>
-                                    <StyledText style={styles.infoName}>اسم المالك</StyledText>
-                                </View>
-                                <View style={styles.infoRowCont}>
-                                    <View style={styles.infoRow}>
-                                        <StyledText style={styles.info}>{managerDetails.phone}</StyledText>
-                                        <Entypo name="phone" size={24} color="#924480" />
-                                    </View>
-                                    <View style={styles.infoRow}>
-                                        <StyledText style={styles.info}>{managerDetails.email}</StyledText>
-                                        <FontAwesome name="envelope" size={24} color="#924480" />
-                                    </View>
-                                </View>
-                            </View>
-                        }
+                        
 
                     </View>
 
@@ -490,7 +504,7 @@ class HallDetailScreen extends Component {
             </ScrollView>
             {user.manager  ? 
             
-            <TouchableOpacity style={styles.minView} onPress={() => this.props.navigation.navigate('AddRoomScreen')}>
+            <TouchableOpacity style={styles.minView} onPress={() => this.props.navigation.navigate('AddRoomScreen',{id:hallId,roomNum:this.state.roomNum})}>
                 <StyledText style={styles.minTXT}>أضف قاعة جديدة</StyledText>
             </TouchableOpacity>
             :
@@ -504,6 +518,7 @@ class HallDetailScreen extends Component {
         </View>
         )
     }
+    }
 
     selectItem = (id) => {
         let listDataCopy = JSON.parse(JSON.stringify(this.state.ordersTap));
@@ -513,7 +528,7 @@ class HallDetailScreen extends Component {
             elem.isSelect = true;
         }
         });
-        const filter = listDataCopy[id].name;
+        const filter = id;
         // const filter = listDataCopy[id].id;
         this.setState({
             ordersTap: listDataCopy,
