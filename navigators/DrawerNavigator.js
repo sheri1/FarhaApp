@@ -16,6 +16,8 @@ import SideBar from '../components/SideBar'
 import AppBottom from "./BottomNavigator";
 import LogoutScreen from "../screens/LogoutScreen";
 
+import OrderStack from './OrderStack';
+
 import NotificationScreen from "../screens/NotificationScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import OffersScreen from "../screens/OffersScreen";
@@ -41,7 +43,8 @@ const AppStack = createDrawerNavigator(
     CommonQuestionScreen:{screen:CommonQuestionScreen},
     UseRuleScreen:{screen:UseRuleScreen},
     PolicyScreen:{screen:PolicyScreen},
-    Logout:{screen: LogoutScreen}
+    Logout:{screen: LogoutScreen},
+    OrderStack:{screen: OrderStack},
   },
   {
     // contentComponent: CustomDrawerContentComponent,

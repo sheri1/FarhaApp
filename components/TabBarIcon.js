@@ -21,14 +21,12 @@ export default class TabBarIcon extends React.Component {
           this.props.name ==  'search-active'?
             <Feather name="search" color='#924480' size={30}/>
           :
-          this.props.name ==  'order'?
-            // <MaterialCommunityIcons name="view-dashboard-outline" size={30} color="#8D8D8D" />
-            <Feather name="grid" size={30} color="#8D8D8D" />
-          :
-          this.props.name ==  'order-active'?
-            // <MaterialCommunityIcons name="view-dashboard" size={30} color="#924480" />
-            <Entypo name="grid" size={35} color="#924480" />
-          :
+          // this.props.name ==  'order'?
+          //   <Feather name="grid" size={30} color="#8D8D8D" />
+          // :
+          // this.props.name ==  'order-active'?
+          //   <Entypo name="grid" size={35} color="#924480" />
+          // :
           this.props.name ==  'home'?
             <MaterialCommunityIcons name="home-outline" size={30} color="#8D8D8D" />
           :

@@ -4,7 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import ProfileStack from './ProfileStack'
 import HomeStack from './HomeStack'
-import OrderStack from './OrderStack'
+// import OrderStack from './OrderStack'
 import SearchStack from './SearchStack'
 
 import TabBarIcon from "../components/TabBarIcon";
@@ -49,24 +49,24 @@ SearchStack.navigationOptions = ({ navigation }) => {
   };
 }
 
-OrderStack.navigationOptions = ({ navigation }) => {
-  let tabBarVisible = true;
-  let routeName = navigation.state.routes[navigation.state.index].routeName;
-  //   if (routeName == "AddPostScreen") {
-  //     tabBarVisible = false;
-  //   }
-  return {
-    tabBarVisible,
-    tabBarLabel: "طلباتي",
-    tabBarOptions: { 
-      activeTintColor: '#924480',
-      inactiveTintColor: '#8D8D8D',
-    },
-    tabBarIcon: ({ focused }) => (
-      <TabBarIcon focused={focused} name={`order${focused ? "-active" : ""}`} />
-    )
-  };
-}
+// OrderStack.navigationOptions = ({ navigation }) => {
+//   let tabBarVisible = true;
+//   let routeName = navigation.state.routes[navigation.state.index].routeName;
+//   //   if (routeName == "AddPostScreen") {
+//   //     tabBarVisible = false;
+//   //   }
+//   return {
+//     tabBarVisible,
+//     tabBarLabel: "طلباتي",
+//     tabBarOptions: { 
+//       activeTintColor: '#924480',
+//       inactiveTintColor: '#8D8D8D',
+//     },
+//     tabBarIcon: ({ focused }) => (
+//       <TabBarIcon focused={focused} name={`order${focused ? "-active" : ""}`} />
+//     )
+//   };
+// }
 
 ProfileStack.navigationOptions = ({ navigation }) => {
   let tabBarVisible = true;
@@ -91,7 +91,7 @@ ProfileStack.navigationOptions = ({ navigation }) => {
 const AppBottom = createBottomTabNavigator(
   {
     ProfileStack,
-    OrderStack,
+    // OrderStack,
     SearchStack,
     HomeStack
   },
