@@ -5,15 +5,18 @@ import Text from "./StyledTexts/StyledText";
 import { FontAwesome, MaterialIcons, AntDesign,Feather,MaterialCommunityIcons} from "@expo/vector-icons";
 import StyledText from "./StyledTexts/StyledText";
 import { Ionicons } from '@expo/vector-icons';
-import * as firebase from "firebase";
 
-export default class SideBar extends React.Component {
+import { withFirebaseHOC } from "../config/Firebase";
+import Firebase from '../config/Firebase/firebase';
+class SideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeTintColor: "#3FE3EA",
       inactiveTintColor: "#242424", // #000
       itemFlag:'Home',
+      user: {},
+    
     };
   }
 
@@ -22,7 +25,20 @@ export default class SideBar extends React.Component {
     this.props.navigation.navigate(nav)
   }
 
+  componentDidMount() {
+    const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            this.props.firebase.getUserDocument(currentUser.uid)
+                .then(userData=> {
+                    this.setState({user:userData});
+                })
+                .catch(error=>console.log('e',error))
+        }
+  }
+
+
   render() {
+    const {user} = this.state;
     return (
       <View style={[styles.containerView,{backgroundColor:'#fff',paddingTop:150}]}> 
         <Image source={require('../assets/images/drawerIcons/top.png')}
@@ -44,7 +60,7 @@ export default class SideBar extends React.Component {
             </Right>
           </ListItem>
 
-
+        {!user.manager && 
           <ListItem icon noBorder button={true} onPress={()=> this.itemClicked('OrderStack','order')}
             style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
             <Left>
@@ -60,7 +76,7 @@ export default class SideBar extends React.Component {
             </Right>
           </ListItem>
 
-
+        }
           <ListItem icon noBorder button={true} onPress={()=> this.itemClicked('NotificationScreen','notifi')}
             style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
             <Left>
@@ -195,7 +211,7 @@ export default class SideBar extends React.Component {
 
           <ListItem icon noBorder button={true} 
           // onPress={()=> this.itemClicked('Logout','Logout')}
-          onPress={()=>firebase.auth().signOut()}
+          onPress={()=>Firebase.auth.signOut()}
             style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
             <Left>
               <AntDesign name="left" size={20} color="black" />
@@ -232,3 +248,6 @@ const styles = StyleSheet.create({
     fontWeight: "normal"
   }
 })
+
+
+export default withFirebaseHOC(SideBar);

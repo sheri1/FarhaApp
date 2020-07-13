@@ -8,7 +8,8 @@ import ViewPager from '@react-native-community/viewpager';
 import OneHallComponent from '../../components/OneHallComponent'
 
 import {registerPushNotification} from '../../notifications';
-
+import * as firebase from 'firebase';
+import { withFirebaseHOC } from "../../config/Firebase";
 ///////////////////////////////////////For Notification to solve error message 
 
 const _setTimeout = global.setTimeout;
@@ -54,7 +55,7 @@ if (Platform.OS === 'android') {
 //////////////////////////////////////////////////
 
 
-export default class HomeScreen extends Component {
+ class HomeScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -87,26 +88,68 @@ export default class HomeScreen extends Component {
                 {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
                     location:'دير البلح',discount:'30%',isFav:true
                 },
-                {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:null,isFav:true
-                }
+             
             ],
-            activeIndex:0
+            activeIndex:0,
+            user: {},
+      
+    
         }
     }
 
     componentDidMount(){
         registerPushNotification();
+        const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            this.props.firebase.getUserDocument(currentUser.uid)
+                .then(userData=> {
+                    this.setState({user:userData});
+                })
+                .catch(error=>console.log('e',error))
+        }
+
+
+        setTimeout(()=> {
+            console.log(this.state.user.city)
+            const defaultCity = this.state.user.city !== "undefined" ? this.state.user.city : "غزة";
+            firebase.firestore().collection('halls').where('address', "==" , defaultCity )
+            .get().then((querySnapshot)  => {
+                querySnapshot.forEach((doc) => {
+                const hallData = doc.data();
+            
+                let hallListData = [];
+                hallListData.push(
+                    {id:doc.id,
+                    image: hallData.hallImage,
+                    name: hallData.name,
+                    
+                    location:hallData.address,
+                    discount:null,
+                    isFav: false,
+                    uri:true
+                    
+                    }
+                )
+                this.setState(prevState => ({
+                    nearList: [...prevState.nearList, ...hallListData]
+                }))
+                    
+            });
+            })
+            .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+        
+        }, 5000)
+
+  
+        
+
     }
 
 
     render() {
+    
         return (
         <View style={styles.containerStyle}> 
                    
@@ -230,3 +273,5 @@ export default class HomeScreen extends Component {
         )
     }
 }
+
+export default withFirebaseHOC(HomeScreen);

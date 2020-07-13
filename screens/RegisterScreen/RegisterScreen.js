@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View,StatusBar,Image, TouchableOpacity, ScrollView, TextInput, AsyncStorage, Platform } from "react-native";
+import { View,StatusBar,Image, TouchableOpacity, ScrollView, TextInput, AsyncStorage, Platform, Picker } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import StyledText from "../../components/StyledTexts/StyledText";
 import StyledTextBold from "../../components/StyledTexts/StyledTextBold";
@@ -30,7 +30,7 @@ class RegisterScreen extends Component {
       securePassword2:true,
       errors:{},
       phone:'',
-      city:''
+      city:'غزة'
       
     }
   }
@@ -78,7 +78,7 @@ class RegisterScreen extends Component {
   }
 
   validation = () => {
-    const {displayName,email,phone,city,password,password_confirmation} = this.state;
+    const {displayName,email,phone,password,password_confirmation} = this.state;
     let isValid = true;
     let errors = {};
 
@@ -105,11 +105,7 @@ class RegisterScreen extends Component {
         //add Error message
     }
 
-    if(!city.match(/^[a-zA-Z\u0600-\u06FF\s]+$/) || !city){
-      isValid = false;
-      errors["city"] = "يرجى التحقق من اسم المدينة"
-      //add Error message
-    }
+
 
     if(password !== password_confirmation){
       isValid = false;
@@ -137,6 +133,7 @@ class RegisterScreen extends Component {
         }
 
       } catch (err) {
+        alert('email already used')
         console.log('Something went wrong: ' + err);
         throw err
       }
@@ -151,7 +148,7 @@ class RegisterScreen extends Component {
   }
 
   render() {
-    const {errors} = this.state;
+    const {errors,city} = this.state;
     return (
       <>
         <View style={styles.containerLinear}>
@@ -248,24 +245,23 @@ class RegisterScreen extends Component {
 
                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["phone"]}</StyledText>
 
-
                       <View style={styles.InputContainer2}>
-                        <StyledTextBold style={styles.InputContainer2Tilte}>المدينة</StyledTextBold>
-                        <View style={{ flexDirection: 'row' }}>
-                          <TextInput
-                            placeholder="المدينة"
-                            placeholderTextColor="#A2A2A2"
-                            underlineColorAndroid="transparent"
-                            returnKeyType={"next"}
-                            keyboardType='default'
-                            ref={(input) => {this.fourthTextInput = input}}
-                            onSubmitEditing={() => {this.fifthTextInput.focus()}}
-                            onChangeText={(city) => this.setState({ city })}
-                            blurOnSubmit={false}
+                      <StyledTextBold style={styles.InputContainer2Tilte}>المدينة : </StyledTextBold>
+                       <View style={styles.pickerStyle}>
+                            <Picker
+                            mode="dropdown"
+                            selectedValue={this.state.city}
                             style={styles.Input}
-                          />
+                            onValueChange={(city, itemIndex) => this.setState({city})}
+                            >
+                            <Picker.Item label="مدينة غزة" value="غزة" style={{textAlign: 'right'}} />
+                            <Picker.Item label="رفح" value="رفح" style={{textAlign: 'right'}} />
+                            <Picker.Item label="خانيونس" value="خانيونس" style={{textAlign: 'right'}} />
+                            <Picker.Item label="الوسطى" value="الوسطى" style={{textAlign: 'right'}} />
+
+                            </Picker>
+                            </View>
                         </View>
-                      </View>
 
                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:10}}>{errors["city"]}</StyledText>
 

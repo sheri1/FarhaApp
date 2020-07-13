@@ -3,7 +3,7 @@ import { View, ScrollView, StatusBar, Image } from "react-native";
 import styles from "./FavoriteScreenStyle";
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import FavoriteList from '../../components/FavoriteList'
-
+import * as firebase from 'firebase'
 export default class FavoriteScreen extends Component {
     constructor(props) {
         super(props);
@@ -14,24 +14,67 @@ export default class FavoriteScreen extends Component {
                 },
                 {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
                     location:'دير البلح',discount:'60%',isFav:true
-                },
-                {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-                {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:6,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-            ]
+                }, 
+             
+            ],
+
+            hallIds: []
         }
+    }
+
+
+    componentDidMount() {
+        const currentUser = firebase.auth().currentUser;
+        const favRef = firebase.firestore().collection('favouriteHalls');
+        const query = favRef.where('uid' , '==' , currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc)  => {
+                const snapShot = doc.data();
+                console.log(snapShot)
+                const ids = [];
+                ids.push(snapShot.hallId)
+                this.setState(prevState => ({
+                    hallIds: [...prevState.hallIds, ...ids]
+                }))
+                
+                });
+        })
+
+        .catch(function(error) {
+            console.log("Error getting documents1: ", error);
+        });
+
+        setTimeout(()=> {
+            this.state.hallIds.forEach((id) => {
+            const hallRef = firebase.firestore().collection('halls').doc(id)
+            .get()
+            .then((queryResult)  => { 
+                  const hallData = queryResult.data();
+                 let hallListData = [];
+                  hallListData.push(
+                    {id:queryResult.id,
+
+                      image: hallData.hallImage,
+                      name: hallData.name,
+                     
+                      location:hallData.address,
+                      discount:null,
+                      isFav:true,
+                      uri:true
+                      
+                      }
+                  )
+                  this.setState(prevState => ({
+                    fav: [...prevState.fav, ...hallListData]
+                  }))
+                    
+              
+            }).catch(e=>console.log(e))
+            
+         })
+         },5000)
+    
     }
     
     render() {

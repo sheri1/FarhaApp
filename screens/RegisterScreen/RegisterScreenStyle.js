@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
   InputContainer2:{marginBottom:15,justifyContent:'center',alignItems:'center',height:70,paddingRight:10,
     paddingLeft:10,borderRadius:10,borderBottomColor:'#E5E5E5',borderBottomWidth:1
   },
+  pickerStyle:{flexDirection: 'row',backgroundColor:'#FAFAFA',height:50,borderRadius:10,paddingHorizontal:10,
+  marginBottom: 15
+},
   InputContainer2Tilte:{width:'100%',fontSize:12,textAlign: 'right',marginBottom: 5},
   InputTilte:{textAlign:'right',color: titleColor,fontSize: 14,marginBottom: 5},
   Input:{flex:1,fontSize: 12,textAlign: 'right'},

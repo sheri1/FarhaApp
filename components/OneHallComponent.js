@@ -2,11 +2,13 @@ import * as React from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import StyledText from './StyledTexts/StyledText';
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import * as firebase from 'firebase';
 
 export default class OneHallComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isFav:false,
         }
     }
 
@@ -17,9 +19,9 @@ export default class OneHallComponent extends React.Component {
         {sectionDetailList.map((item,index)=>{
                 return(
                     <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}
-                    onPress={() => this.props.navigation.navigate('HallDetailScreen')}>
+                    onPress={() => this.props.navigation.navigate('HallDetailScreen',{id:item.id})}>
                         <View style={styles.ImageCont}>
-                            <Image source={item.image} style={{width:120,height:100}} resizeMode='contain'/>
+                            <Image source={item.uri ? {uri:item.image} : item.image} style={{width:120,height:100}} resizeMode='contain'/>
                             {item.discount &&
                             <View style={styles.discount}>
                                 <StyledText style={styles.discountTXT}>عرض {item.discount}</StyledText>
@@ -28,7 +30,7 @@ export default class OneHallComponent extends React.Component {
                         </View>
                         <View style={styles.heartCont}>
                             <TouchableOpacity style={styles.heartTouch}
-                                // onPress={()=> this.favPress()}
+                                onPress={()=> this.favPress(item.id)}
                             >
                                 {item.isFav ? 
                                     <AntDesign name='heart' size={20} color='red'/>
@@ -55,8 +57,46 @@ export default class OneHallComponent extends React.Component {
         );
     }
 
-    // favPress(){
-    // }
+     favPress(id){
+        const currentUser = firebase.auth().currentUser;
+        const favRef = firebase.firestore().collection('favouriteHalls');
+        const query = favRef.where('hallId', '==' ,id)
+        .where('uid' , '==' , currentUser.uid)
+        .get()
+        .then(function(querySnapshot) {
+         
+            if (querySnapshot.size === 0) {
+                favRef.add({
+                    uid: currentUser.uid,
+                    hallId: id
+                })
+            }else {
+            querySnapshot.forEach(function(doc) {
+                // doc.data() is never undefined for query doc snapshots
+                favRef.doc(doc.id).delete()
+                .then(()=>alert('deleted'))
+                .catch(e=>console.log(e))
+                
+                });
+            }
+        })
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+
+      
+
+        // // Go and fetch a document from that location.
+        // const snapshot = await userRef.get();
+        // if (!snapshot.exists) {
+        //         favRef.set({
+        //           uid: currentUser.uid,
+        //           hallId: id
+        //       })
+        // }else {
+        //     firebase.firestore().collection('favouriteHalls').doc(id).delete();
+        // }
+    }
 }
 
 const styles = StyleSheet.create({
