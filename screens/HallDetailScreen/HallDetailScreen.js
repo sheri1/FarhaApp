@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Modal,TouchableOpacity,ImageBackground} from "react-native";
+import { View, ScrollView, StatusBar,Modal,TouchableOpacity,ImageBackground, Picker} from "react-native";
 import styles from "./HallDetailScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
 import ViewPager from '@react-native-community/viewpager';
+import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import { Entypo, FontAwesome, AntDesign } from '@expo/vector-icons'; 
 import {Calendar} from 'react-native-calendars';
 import { Rating } from 'react-native-elements';
@@ -48,7 +49,11 @@ class HallDetailScreen extends Component {
             user: {},
             hallId:null,
             ownerId: null,
-            isLoading:true
+            isLoading:true,
+            category: "قاعة رقم 1",
+            markedDates: {   '2020-07-16': 
+            {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
+        }
         }
     }
     
@@ -172,10 +177,30 @@ class HallDetailScreen extends Component {
             .catch(error=>console.log('e',error))
            },5000)
             
+           firebase.firestore().collection('registration')
+           .where('hallId' , '==' , id)
+           .get()
+           .then((querySnapshot)  => {
+            querySnapshot.forEach((doc) => {
+              const rigesteredDate = doc.data();
+              let dateObj = {};
+              dateObj[rigesteredDate.registerDate] = {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
+           
+              this.setState(prevState => ({
+                markedDates: {...prevState.markedDates,...dateObj}
+              }))
+                
+              
+          });
+        })
+        .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
     }
 
 
     render() {
+        console.log(this.state.markedDates);
         const {user,roomDetails,managerDetails,hallId,isLoading,showFilter} = this.state;
         if (isLoading) {
             return (
@@ -438,12 +463,7 @@ class HallDetailScreen extends Component {
                                 disableArrowRight={false}
                                 disableAllTouchEventsForDisabledDays={true}
 
-                                markedDates={{
-                                    '2020-07-16': {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'},
-                                    '2020-07-17': {selected: true,marked: true, disableTouchEvent: true, selectedColor: '#d92027'},
-                                    '2020-07-18': {selected: true,marked: true, disableTouchEvent: true, dotColor: 'white', activeOpacity: 0, selectedColor: '#d92027'},
-                                    '2020-07-19': {selected: true,disabled: true,marked: true, disableTouchEvent: true, selectedColor: '#d92027', dotColor: 'white'}
-                                }}
+                                markedDates={this.state.markedDates}
 
                                 style={{
                                     backgroundColor:'#924480',
@@ -489,8 +509,29 @@ class HallDetailScreen extends Component {
                                 </View>
                             </View>
 
+                            <View style={styles.InputContainer2}>
+                
+                       
+                       <View style={styles.pickerStyle}>
+                            <Picker
+                            mode="dropdown"
+                            selectedValue={this.state.category}
+                            style={styles.Input}
+                            onValueChange={(category, itemIndex) => this.setState({category})}
+                            >
+                            {this.state.ordersTap.map((item, index)=>(
+                                item.id === 0 ?  null :
+                            <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
+                                
+                            ))}
+                            </Picker>
+                            </View>
+                        </View>
+
+                        
+
                             <View style={styles.done}>
-                                <TouchableOpacity style={styles.doneTouch}>
+                                <TouchableOpacity style={styles.doneTouch} onPress={() => this.register()}>
                                     <StyledText style={styles.doneTxt}>حجز الصالة</StyledText>
                                 </TouchableOpacity>
                             </View>
@@ -547,6 +588,34 @@ class HallDetailScreen extends Component {
           <View style={{backgroundColor:'#924480', width: 8, height:8,borderRadius: 8/2,
             marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3}} />
         )
+    }
+
+    register() {
+        const fullOrderDate = new Date();
+        const year = fullOrderDate.getFullYear();
+        const month = fullOrderDate.getMonth();
+        const date = fullOrderDate.getDate();
+        const orderDate = year + '-' + month + '-' + date;
+        firebase.firestore().collection('registration').add({
+            orderStatus : "Suspended",
+            orderDate : orderDate,
+            registerDate : this.state.selectedDate,
+            roomName: this.state.category,
+            managerId: this.state.ownerId,
+            hallId: this.state.hallId
+        }).then(()=> {
+            const dateObj = {
+                [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
+            }
+            this.setState(prevState => ({
+                markedDates: {...prevState.markedDates,...dateObj}
+              }))
+            alert('لتأكيد الحجز يرجى التوجه للصالة لدفع العربون في خلال 3 أيام')
+        })
+
+      
+        // this.props.navigation.navigate('OrderDoneScreen');
+      
     }
 }
 

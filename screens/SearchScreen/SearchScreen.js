@@ -11,42 +11,26 @@ import SearchList from '../../components/SearchList'
 import { Rating } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
+import * as firebase from 'firebase';
+import { withFirebaseHOC } from '../../config/Firebase'
 
-export default class SearchScreen extends Component {
+ class SearchScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       search: "",
       regionsList:[
         {id:0,name:'الكل',isSelect:true},
-        {id:1,name:'جنوب غزة',isSelect:false},
-        {id:2,name:'شرق غزة',isSelect:false},
-        {id:3,name:'شمال غزة',isSelect:false},
-        {id:4,name:'غرب غزة',isSelect:false},
+        {id:1,name:'غزة',isSelect:false},
+        {id:2,name:'رفح',isSelect:false},
+        {id:3,name:'خانيونس',isSelect:false},
+        {id:4,name:'الوسطى',isSelect:false},
       ],
       reginFilter:'الكل',
       searchList:[
         {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
           location:'دير البلح',discount:null,isFav:true,uri:false
-        },
-        {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:false,uri:false
-        },
-        {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:true,uri:false
-        },
-        {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:false,uri:false
-        },
-        {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:false,uri:false
-        },
-        {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:'60%',isFav:true,uri:false
-        },
-        {id:6,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-          location:'دير البلح',discount:null,isFav:false,uri:false
-        },
+        }
       ],
       modalVisible:false,
       hallPersonNum:300,
@@ -57,9 +41,43 @@ export default class SearchScreen extends Component {
       Selecteddate:'',
       mostBooked:true,
       minPrice:'',
-      maxPrice:''
+      maxPrice:'',
+      user: {}
     }
+    }
+
+
+
+  componentDidMount () {
+    firebase.firestore().collection('halls')
+    .get().then((querySnapshot)  => {
+      querySnapshot.forEach((doc) => {
+      const hallData = doc.data();
+      let hallListData = [];
+      hallListData.push(
+          {id:doc.id,
+          image: hallData.hallImage,
+          name: hallData.name,
+          
+          location:hallData.address,
+          discount:null,
+          isFav: false,
+          uri:true
+          
+          }
+      )
+      this.setState(prevState => ({
+        searchList: [...prevState.searchList, ...hallListData]
+      }))
+            
+    });
+    })
+    .catch(function(error) {
+    console.log("Error getting documents: ", error);
+    });
   }
+
+
 
   selectItem = (id) => {
     let listDataCopy = JSON.parse(JSON.stringify(this.state.regionsList));
@@ -69,11 +87,71 @@ export default class SearchScreen extends Component {
         elem.isSelect = true;
       }
     });
+
+    if (this.state.reginFilter === "الكل") {
+      firebase.firestore().collection('halls')
+      .get().then((querySnapshot)  => {
+        querySnapshot.forEach((doc) => {
+        const hallData = doc.data();
+        let hallListData = [];
+        hallListData.push(
+            {id:doc.id,
+            image: hallData.hallImage,
+            name: hallData.name,
+            
+            location:hallData.address,
+            discount:null,
+            isFav: false,
+            uri:true
+            
+            }
+        )
+        this.setState(prevState => ({
+          searchList: [...hallListData]
+        }))
+              
+      });
+      })
+      .catch(function(error) {
+      console.log("Error getting documents: ", error);
+      });
+    }else {
+  
+        firebase.firestore().collection('halls').where('address', "==" , this.state.reginFilter )
+            .get().then((querySnapshot)  => {
+                querySnapshot.forEach((doc) => {
+                const hallData = doc.data();
+                let hallListData = [];
+                hallListData.push(
+                    {id:doc.id,
+                    image: hallData.hallImage,
+                    name: hallData.name,
+                    
+                    location:hallData.address,
+                    discount:null,
+                    isFav: false,
+                    uri:true
+                    
+                    }
+                )
+                this.setState(prevState => ({
+                  searchList: [...hallListData]
+                }))
+                    
+            });
+            })
+            .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+      }
+
     const filter = listDataCopy[id].name;
     this.setState({
       regionsList: listDataCopy,
       reginFilter: filter,
     });
+
+    
   }
 
   ratingCompleted(rating) {
@@ -98,6 +176,7 @@ export default class SearchScreen extends Component {
   }
 
   render() {
+    
     return (
       <View style={styles.containerStyle}>          
         <View style={styles.StatusBar}>
@@ -378,3 +457,5 @@ export default class SearchScreen extends Component {
   }
 
 }
+
+export default withFirebaseHOC(SearchScreen);

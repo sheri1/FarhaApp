@@ -78,6 +78,15 @@ const styles = StyleSheet.create({
         alignItems:'center',marginVertical:10
     },
 
+    InputContainer2:{marginBottom:15,justifyContent:'center',alignItems:'center',minHeight:70,paddingRight:10,
+        paddingLeft:10,borderRadius:10,marginBottom: 10
+        // borderBottomColor:'#E5E5E5',borderBottomWidth:1
+    },
+    InputContainer2Tilte:{width:'100%',fontSize:12,textAlign: 'right',marginBottom:10},
+    pickerStyle:{flexDirection: 'row',backgroundColor:'#FAFAFA',height:50,borderRadius:10,paddingHorizontal:10,
+    marginBottom: 15
+},
+Input:{flex:1,fontSize: 12,textAlign: 'right',color:'#A2A2A2'},
     minView:{alignItems:'center',justifyContent:'center',backgroundColor:'#924480',height:60,
         borderTopLeftRadius:30,borderTopRightRadius:30
     },

@@ -111,7 +111,7 @@ if (Platform.OS === 'android') {
 
         setTimeout(()=> {
             console.log(this.state.user.city)
-            const defaultCity = this.state.user.city !== "undefined" ? this.state.user.city : "غزة";
+            const defaultCity = this.state.user.city !== undefined ? this.state.user.city : "غزة";
             firebase.firestore().collection('halls').where('address', "==" , defaultCity )
             .get().then((querySnapshot)  => {
                 querySnapshot.forEach((doc) => {
