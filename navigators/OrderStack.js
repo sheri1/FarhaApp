@@ -1,6 +1,7 @@
 import {createStackNavigator} from 'react-navigation-stack';
 import OrdersScreen from '../screens/OrdersScreen';
 import OrderDetailScreen from '../screens/OrderDetailScreen';
+import ManagerOrdersScreen from '../screens/ManagerOrdersScreen';
 
 
 const OrderStack = createStackNavigator(
@@ -18,6 +19,14 @@ const OrderStack = createStackNavigator(
             screen: OrderDetailScreen,
             navigationOptions: {
                 title: "OrderDetailScreen",
+                header: null,
+            }
+        },
+        
+        ManagerOrdersScreen: {
+            screen: ManagerOrdersScreen,
+            navigationOptions: {
+                title: "ManagerOrdersScreen",
                 header: null,
             }
         },

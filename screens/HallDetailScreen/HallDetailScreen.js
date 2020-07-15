@@ -602,7 +602,10 @@ class HallDetailScreen extends Component {
             registerDate : this.state.selectedDate,
             roomName: this.state.category,
             managerId: this.state.ownerId,
-            hallId: this.state.hallId
+            hallId: this.state.hallId,
+            hallName: this.state.hallDetail.name,
+            userName: this.state.user.displayName,
+            userPhone: this.state.user.phone
         }).then(()=> {
             const dateObj = {
                 [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}

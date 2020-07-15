@@ -60,7 +60,7 @@ class SideBar extends React.Component {
             </Right>
           </ListItem>
 
-        {!user.manager && 
+        {!user.manager ?
           <ListItem icon noBorder button={true} onPress={()=> this.itemClicked('OrderStack','order')}
             style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
             <Left>
@@ -69,6 +69,23 @@ class SideBar extends React.Component {
             <Body>
               <Text style={styles.firstItemTitle}>
                 طلباتي
+              </Text>
+            </Body>
+            <Right>
+            <Feather name="grid" size={20} color="#924480" />
+            </Right>
+          </ListItem>
+
+          :
+
+          <ListItem icon noBorder button={true} onPress={()=> this.props.navigation.navigate('ManagerOrdersScreen')}
+            style={[styles.firstItemList,{backgroundColor:'#fff'}]}>
+            <Left>
+              <AntDesign name="left" size={20} color="black" />
+            </Left>
+            <Body>
+              <Text style={styles.firstItemTitle}>
+                لوحة التحكم
               </Text>
             </Body>
             <Right>

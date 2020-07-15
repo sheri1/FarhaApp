@@ -1,36 +1,54 @@
 import React, { Component } from "react";
 import { View, ScrollView, StatusBar,TouchableOpacity,Image} from "react-native";
-import styles from "./OrdersScreenStyle";
+import styles from "./ManagerOrdersScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import OrderList from '../../components/OrderList'
+import * as firebase from 'firebase';
 
-export default class OrdersScreen extends Component {
+export default class ManagerOrdersScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+        
             orderList:[
-                {id:0,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
-                {id:1,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
-                {id:2,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
             ]
         }
     }
 
-    selectItem = (id) => {
-        let listDataCopy = JSON.parse(JSON.stringify(this.state.ordersTap));
-        listDataCopy.forEach((elem) => {
-        elem.isSelect = false;
-        if (elem.id === id) {
-            elem.isSelect = true;
-        }
-        });
-        const filter = listDataCopy[id].name;
-        this.setState({
-            ordersTap: listDataCopy,
-            showFilter: filter,
-        });
+    componentDidMount() {
+        const userId = firebase.auth().currentUser;
+        console.log('id',userId.uid);
+        firebase.firestore().collection('registration')
+        .where("managerId",  '==', userId.uid)
+        .get()
+        .then((querySnapshot)  => {
+            // console.log('q',querySnapshot)
+            querySnapshot.forEach((doc) => {
+              const orderData = doc.data();
+              console.log('ff',orderData);
+              let DatesList = [];
+              DatesList.push(
+                
+                {
+                 rigesterDate: orderData.registerDate,
+                 orderNumber:  doc.id,
+                 hallName: orderData.hallName,
+                 roomName: orderData.roomName,
+                 userName: orderData.userName,
+                 userPhone: orderData.userPhone
+                }
+              )
+              var joined = this.state.orderList.concat(DatesList)
+              this.setState({orderList:joined})
+
+            
+          });
+        })
+        .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+
     }
 
     render() {
@@ -40,7 +58,7 @@ export default class OrdersScreen extends Component {
                 <StatusBar barStyle="light-content"/>
             </View>
             <View>
-            <HeaderMenu navigation={this.props.navigation} title='الطلبات'></HeaderMenu>
+            <HeaderMenu navigation={this.props.navigation} title='لوحة التحكم'></HeaderMenu>
             </View>
             <ScrollView
                 style={{ width: '100%' }}
@@ -59,6 +77,7 @@ export default class OrdersScreen extends Component {
                                 details={this.state.orderList}
                             />
                         </View>
+
                         </>
                         :
                         <View style={{width: '100%',paddingTop:50,justifyContent:'center',alignItems:'center'}}>
