@@ -21,7 +21,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
         if(currentUser != null) {
             currentUser.sendEmailVerification().then(function() {
                 // Email sent.
-                alert('Email sent Successfuly');
+                alert('يرجى مراجعة بريدك الالكتروني لتأكيد التسجيل');
               }).catch(function(error) {
                 // An error happened.
                 alert('error')

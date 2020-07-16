@@ -16,7 +16,7 @@ export default class SplashScreen extends Component {
 
   async whereToGo() {
    // console.log("hello")
-   // this.props.navigation.navigate("Slider")
+  //  this.props.navigation.navigate("Slider")
 
     firebase.auth().onAuthStateChanged(user => {
       this.props.navigation.navigate(user ? "HomeScreen" : "LoginScreen");

@@ -242,13 +242,13 @@ class LoginScreen extends Component {
     let isValid = true;
     if(!email) {
       isValid = false;
-      alert("This filed is required");
+      alert("يرجى ادخال بريد الكتروني صحيح");
       return;
     }
 
     if (!password){
       isValid = false;
-      alert("Password is required");
+      alert("يرجى ادخال كلمة المرور ");
       return;
     }
 
