@@ -593,6 +593,7 @@ class HallDetailScreen extends Component {
     }
 
     register() {
+        this.setState({modalVisible:false})
         const {roomDetails,category} = this.state;
    
         const roomPrice = roomDetails.filter(item => {
@@ -629,11 +630,11 @@ class HallDetailScreen extends Component {
             this.setState(prevState => ({
                 markedDates: {...prevState.markedDates,...dateObj}
               }))
-            alert('لتأكيد الحجز يرجى التوجه للصالة لدفع العربون في خلال 3 أيام')
+            //alert('لتأكيد الحجز يرجى التوجه للصالة لدفع العربون في خلال 3 أيام')
         })
 
       
-        // this.props.navigation.navigate('OrderDoneScreen');
+         this.props.navigation.navigate('BookingDoneStack');
       
     }
 }

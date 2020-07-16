@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity} from "react-native";
-import styles from "./OrderDoneScreenStyle";
+import styles from "./BookingDoneScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 
-export default class OrderDoneScreen extends Component {
+export default class BookingDoneScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,11 +29,11 @@ export default class OrderDoneScreen extends Component {
                     snapToStart={true}
                 >   
                     <Image source={require('../../assets/images/contact.png')} />
-                    <StyledText style={styles.thanks}>لتأكيد الحجز يرجى التوجه للصالة لدفع العربون في خلال 3 أيام</StyledText>
-                    
-
+                    <StyledText style={styles.thanks}>لتأكيد الحجز يرجى التوجه للصالة</StyledText>
+                    <StyledText style={styles.thanks}> لدفع العربون خلال مدة 3 أيام</StyledText>
+                    <StyledText style={styles.thanks}></StyledText>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('HomeScreen')}>
-                        <StyledText style={styles.move}>الانتقال للرئيسية</StyledText>
+                        <StyledText style={styles.move}>الرجوع للرئيسية</StyledText>
                     </TouchableOpacity>
                 
                 </ScrollView>

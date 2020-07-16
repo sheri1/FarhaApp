@@ -17,7 +17,7 @@ import AppBottom from "./BottomNavigator";
 import LogoutScreen from "../screens/LogoutScreen";
 
 import OrderStack from './OrderStack';
-
+import BookingDoneStack from './BookingDoneStack';
 import NotificationScreen from "../screens/NotificationScreen";
 import FavoriteScreen from "../screens/FavoriteScreen";
 import OffersScreen from "../screens/OffersScreen";
@@ -45,6 +45,7 @@ const AppStack = createDrawerNavigator(
     PolicyScreen:{screen:PolicyScreen},
     Logout:{screen: LogoutScreen},
     OrderStack:{screen: OrderStack},
+    BookingDoneStack:{screen: BookingDoneStack}
   },
   {
     // contentComponent: CustomDrawerContentComponent,

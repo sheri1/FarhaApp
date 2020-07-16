@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
     StatusBar: {height: Constants.statusBarHeight,backgroundColor: "transparent"},
     thanks:{fontSize:16,color:'#000',marginVertical:10},
-    try:{fontSize:12,color:'#A2A2A2',marginBottom:100},
+    try:{fontSize:12,color:'#A2A2A2',marginBottom:50},
     move:{fontSize:14,color:'#924480',textDecorationLine:'underline'},
 });
 export default styles;
