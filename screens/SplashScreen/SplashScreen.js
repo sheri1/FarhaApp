@@ -19,7 +19,7 @@ export default class SplashScreen extends Component {
    // this.props.navigation.navigate("Slider")
 
     firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? "HomeScreen" : "Slider");
+      this.props.navigation.navigate(user ? "HomeScreen" : "LoginScreen");
       });
   }
 

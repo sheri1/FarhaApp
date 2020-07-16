@@ -278,7 +278,7 @@ class RegisterScreen extends Component {
                             placeholderTextColor="#A2A2A2"
                             underlineColorAndroid="transparent"
                             secureTextEntry={this.state.securePassword}
-                            ref={(input) => {this.fifthTextInput = input}}
+                            ref={(input) => {this.fourthTextInput = input}}
                             onSubmitEditing={() => {this.sixthTextInput.focus()}}
                             returnKeyType={"done"}
                             onChangeText={(password) => this.setState({ password })}

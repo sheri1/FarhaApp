@@ -31,12 +31,15 @@ export default class ManagerOrdersScreen extends Component {
               DatesList.push(
                 
                 {
+                    id:doc.id,
                  rigesterDate: orderData.registerDate,
                  orderNumber:  doc.id,
                  hallName: orderData.hallName,
                  roomName: orderData.roomName,
+                 userId:orderData.uid,
                  userName: orderData.userName,
-                 userPhone: orderData.userPhone
+                 userPhone: orderData.userPhone,
+                 orderStatus: orderData.orderStatus
                 }
               )
               var joined = this.state.orderList.concat(DatesList)

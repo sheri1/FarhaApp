@@ -35,7 +35,7 @@ export default class AddRoomScreen extends Component {
     componentDidMount() {
         const id = this.props.navigation.getParam('id');
         const roomNum = this.props.navigation.getParam('roomNum');
-        console.log('num' , roomNum);
+        console.log('hall id' , id);
         this.setState({hallId:id,
         roomNumber:roomNum});
     }
@@ -362,7 +362,7 @@ export default class AddRoomScreen extends Component {
     
     AddRoom(){
         const {hallId,roomNumber} = this.state;
-        
+        console.log('id' ,hallId)
         const roomsData = { 
             roomName:this.state.roomName,
             roomPrice:this.state.roomPrice,
@@ -376,21 +376,24 @@ export default class AddRoomScreen extends Component {
         }
         if(this.validation()){
             const ref = firebase.firestore().collection('rooms').add(roomsData)
+            .then(()=>{
+               firebase.firestore().collection('halls').doc(hallId).update({
+                    roomNum: roomNumber + 1,
+                })
+                .then(()=>console.log('done'))
+                .catch(e=>console.log(e))
+            })
             .catch(function(error) {
                 console.error("Error adding document: ", error);
                 alert('Something went wrong');
             });
             
+            console.log(hallId);
 
-            setTimeout( ()=> firebase.firestore().collection('halls').doc(hallId).update({
-                roomNum: roomNumber + 1,
-            })
-            .then(()=>console.log('done'))
-            .catch(e=>console.log(e)),2000);
         }
 
         
-        setTimeout(() => this.props.navigation.navigate('AddRoomDoneScreen') , 2000);
+        setTimeout(() => this.props.navigation.navigate('AddRoomDoneScreen') , 4000);
         
         
     }

@@ -27,6 +27,7 @@ class HallDetailScreen extends Component {
             },
             roomDetails: [
                 {
+                    id:0,
                     name: 'اسم القاعة',
                     price: '2000$',
                     numOfPeople: '200',
@@ -50,7 +51,7 @@ class HallDetailScreen extends Component {
             hallId:null,
             ownerId: null,
             isLoading:true,
-            category: "قاعة رقم 1",
+            category: "",
             markedDates: {   '2020-07-16': 
             {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
         }
@@ -164,7 +165,7 @@ class HallDetailScreen extends Component {
            setTimeout(()=> {
             this.props.firebase.getUserDocument(this.state.ownerId)
             .then(userData=> {
-                console.log(this.state.ownerId)
+           
                 const managerInfo = {
                     name : userData.displayName,
                     phone : userData.businessPhone,
@@ -200,7 +201,7 @@ class HallDetailScreen extends Component {
 
 
     render() {
-        console.log(this.state.markedDates);
+        console.log('tabs', this.state.ordersTap )
         const {user,roomDetails,managerDetails,hallId,isLoading,showFilter} = this.state;
         if (isLoading) {
             return (
@@ -519,7 +520,8 @@ class HallDetailScreen extends Component {
                             style={styles.Input}
                             onValueChange={(category, itemIndex) => this.setState({category})}
                             >
-                            {this.state.ordersTap.map((item, index)=>(
+
+                            {this.state.roomDetails.map((item, index)=>(
                                 item.id === 0 ?  null :
                             <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
                                 
@@ -591,21 +593,35 @@ class HallDetailScreen extends Component {
     }
 
     register() {
+        const {roomDetails,category} = this.state;
+   
+        const roomPrice = roomDetails.filter(item => {
+            if ( item.id === 0) return null;
+            console.log('room',item.name);
+            console.log('category',category);
+            if (item.name === category) return item
+        })
+
+        console.log( roomPrice[0].price);
+       
+
         const fullOrderDate = new Date();
         const year = fullOrderDate.getFullYear();
         const month = fullOrderDate.getMonth();
         const date = fullOrderDate.getDate();
         const orderDate = year + '-' + month + '-' + date;
         firebase.firestore().collection('registration').add({
-            orderStatus : "Suspended",
+            orderStatus :false,
             orderDate : orderDate,
             registerDate : this.state.selectedDate,
             roomName: this.state.category,
             managerId: this.state.ownerId,
             hallId: this.state.hallId,
             hallName: this.state.hallDetail.name,
+            uid: this.state.user.uid,
             userName: this.state.user.displayName,
-            userPhone: this.state.user.phone
+            userPhone: this.state.user.phone,
+            roomPrice: roomPrice[0].price
         }).then(()=> {
             const dateObj = {
                 [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}

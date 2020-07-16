@@ -4,6 +4,8 @@ import styles from "./OrdersScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import OrderList from '../../components/OrderList'
+import UserOrderList from "../../components/UserOrderList";
+import * as firebase from 'firebase';
 
 export default class OrdersScreen extends Component {
     constructor(props) {
@@ -11,26 +13,46 @@ export default class OrdersScreen extends Component {
         this.state = {
             
             orderList:[
-                {id:0,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
-                {id:1,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
-                {id:2,hallName:'اسم الصالة',orderNum:'123456',orderDate:'16/6/2020',orderTime:'7:30'},
+            
             ]
         }
     }
 
-    selectItem = (id) => {
-        let listDataCopy = JSON.parse(JSON.stringify(this.state.ordersTap));
-        listDataCopy.forEach((elem) => {
-        elem.isSelect = false;
-        if (elem.id === id) {
-            elem.isSelect = true;
-        }
-        });
-        const filter = listDataCopy[id].name;
-        this.setState({
-            ordersTap: listDataCopy,
-            showFilter: filter,
-        });
+    componentDidMount() {
+        const userId = firebase.auth().currentUser;
+        firebase.firestore().collection('registration')
+        .where("uid",  '==', userId.uid)
+        .get()
+        .then((querySnapshot)  => {
+            querySnapshot.forEach((doc) => {
+              const orderData = doc.data();
+              let DatesList = [];
+              DatesList.push(
+                
+                {
+                 id:doc.id,
+                 rigesterDate: orderData.registerDate,
+                 orderNumber:  doc.id,
+                 hallName: orderData.hallName,
+                 roomName: orderData.roomName,
+                 userId:orderData.uid,
+                 userName: orderData.userName,
+                 userPhone: orderData.userPhone,
+                 orderStatus: orderData.orderStatus,
+                 orderDate: orderData.orderDate,
+                 price: orderData.roomPrice
+                }
+              )
+              var joined = this.state.orderList.concat(DatesList)
+              this.setState({orderList:joined})
+
+            
+          });
+        })
+        .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+
     }
 
     render() {
@@ -54,7 +76,7 @@ export default class OrdersScreen extends Component {
                     {this.state.orderList.length > 0 ?
                         <>
                         <View style={styles.storiesImagesCont}>
-                            <OrderList 
+                            <UserOrderList 
                                 navigation={this.props.navigation}
                                 details={this.state.orderList}
                             />
@@ -63,7 +85,7 @@ export default class OrdersScreen extends Component {
                         :
                         <View style={{width: '100%',paddingTop:50,justifyContent:'center',alignItems:'center'}}>
                             <Image source={require('../../assets/images/noSearch.png')}/>
-                            <StyledText style={{color:'#000'}}>لا يوجد حجوزات بالصالات الخاصة بك</StyledText>
+                            <StyledText style={{color:'#000'}}>لم تقم بحجز أي صالة بعد</StyledText>
                         </View>
                     }
                 </View>
