@@ -210,9 +210,6 @@ class HallDetailScreen extends Component {
           } else {
         return (
         <View style={styles.containerStyle}>        
-            {/* <View style={styles.StatusBar}>
-                <StatusBar barStyle="light-content"/>
-            </View> */}
 
             <View style={{position:'absolute',width:'100%',top:0,zIndex:1000}}>
                 <HeaderBack navigation={this.props.navigation} title='تفاصيل الصالة' from='profile'></HeaderBack>
@@ -365,62 +362,6 @@ class HallDetailScreen extends Component {
 
                             </View>
                         }
-
-                        {/* {this.state.showFilter === 'القاعة رقم 2' &&
-                            <View style={styles.ContactView}>
-                                <View style={styles.firstRow}>
-                                    <View style={styles.firstRowPrice}>
-                                        <StyledText style={styles.firstPrice}>200$</StyledText>
-                                    </View>
-                                    <View style={styles.firstRowName}>
-                                        <StyledText style={styles.firstName}>اسم القاعة</StyledText>
-                                    </View>
-                                </View>
-
-                                <View style={styles.capView}>
-                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى 300 شخص </StyledText>
-                                </View>
-
-                                <View style={styles.serviceView}>
-                                    <View style={styles.serviceRow}>
-                                        <StyledText style={styles.serviceTitle}>الخدمات المجانية</StyledText>
-                                    </View>
-                                    <View style={styles.serviceRow}>
-                                        <StyledText style={styles.serviceInfo}>
-                                            {`قاعة مكيفة بالكامل - اضاءة أنوار مختلفة -عرض زفة دخول العروسين - شاشات عرض  - ورد للتزين`}
-                                        </StyledText>
-                                    </View>
-                                </View>
-
-                                <View style={styles.serviceView}>
-                                    <View style={styles.serviceRow}>
-                                        <StyledText style={styles.serviceTitle}>
-                                        الخدمات ( مدفوعة تبدأ من 30 دولار )
-                                        </StyledText>
-                                    </View>
-                                    <View style={styles.serviceRow}>
-                                        <StyledText style={styles.serviceInfo}>
-                                            {`كوشه مضيئة - ليزر - فيديو - دي جي طوال الحفل - ماكينة دخان - عرض التورته - بوفيه للمشروبات - ورد أثناء الرقص`}
-                                        </StyledText>
-                                    </View>
-                                </View>
-
-                                <View style={styles.rateCont}>
-                                    <View style={styles.rateView}>
-                                        <Rating
-                                            imageSize={35} type='star' readonly
-                                            startingValue={3}
-                                        />
-                                    </View>
-                                    <StyledText style={styles.rateTitle}>
-                                        تقييم المستخدمين
-                                    </StyledText>  
-                                </View>
-
-                            </View>
-                        } */}
-
-                        
 
                     </View>
 

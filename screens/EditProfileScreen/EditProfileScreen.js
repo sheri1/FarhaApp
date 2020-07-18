@@ -115,7 +115,7 @@ class EditProfileScreen extends Component {
                     
                     currentUser.updateProfile({displayName,phone,photoURL})
                     .then (()=> {
-                        alert("Document successfully updated!");
+                        alert("تم تحديث بياناتك بنجاح");
                     })
                 })
                 .catch(function(error) {
