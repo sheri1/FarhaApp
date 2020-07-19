@@ -21,11 +21,16 @@ class LoginScreen extends Component {
       spinner: false,
       isConnected: null,
       securePassword:true,
-      errorMessage:''
+      errorMessage:'',
+      user:false,
     }
   }
 
   componentDidMount() {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser != null) {
+      this.setState({user:true})
+    }
     NetInfo.fetch().then(state => {
       let isConnected = state.isConnected;
       if(isConnected){
@@ -79,8 +84,23 @@ class LoginScreen extends Component {
     }
   }
 
+  signAnonymously() {
+
+    firebase.auth().signInAnonymously()
+    .then(() => {
+      this.props.navigation.navigate('HomeScreen')
+    })
+    .catch(function(error) {
+      // Handle Errors here.
+      var errorMessage = error.message;
+      console.log(errorMessage);
+      // ...
+    });
+ 
+
+  }
   render() {
-    const {errorMessage} = this.state;
+    const {errorMessage, user} = this.state;
     return (
       <>
         <View style={styles.containerLinear}>
@@ -104,13 +124,13 @@ class LoginScreen extends Component {
                     enableOnAndroid={true}
                     style={{ width: "100%" }}
                   >
-                    <View style={{width:'100%'}}>
+                    {!user && <View style={{width:'100%'}}>
                       <TouchableOpacity style={{width:60,height:30,borderRadius:10,backgroundColor:'#F7F6F7',justifyContent:'center',alignItems:'center'}}
-                        onPress={()=>this.props.navigation.navigate('HomeScreen')}
+                        onPress={this.signAnonymously}
                       >
                         <StyledText style={{color:'#924480'}}>تخطي</StyledText>
                       </TouchableOpacity>
-                    </View>
+                    </View>}
                     <View style={styles.logoImage}>
                       <Image source={require('../../assets/images/loginLogo.png')} />
                       <StyledTextBold style={styles.title1}>مرحبا بك</StyledTextBold>

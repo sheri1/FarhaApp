@@ -89,7 +89,12 @@ const styles = StyleSheet.create({
 Input:{flex:1,fontSize: 12,textAlign: 'right',color:'#A2A2A2'},
     minView:{alignItems:'center',justifyContent:'center',backgroundColor:'#924480',height:60,
         borderTopLeftRadius:30,borderTopRightRadius:30
+    },minView2 : {
+        alignItems:'center',justifyContent:'center',backgroundColor:'#924480',height:60,
+        width:"50%",borderWidth:1,borderColor:'#D3D3D3',fontSize:12,textAlign:"center"
+        
     },
+    minTXT2: {color:'#fff',fontSize:15,textAlign:"center"},
     minTXT:{color:'#fff',fontSize:15},
          
     shareFavCont:{width:'100%',height:5,flexDirection:'row',},

@@ -54,12 +54,14 @@ class HallDetailScreen extends Component {
             category: "",
             markedDates: {   '2020-07-16': 
             {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
-        }
+        },
+        isAnonymousUser: false
         }
     }
     
     componentDidMount() {
         const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser.isAnonymous) {this.setState({isAnonymousUser:true})}
         if(currentUser != null) {
             this.props.firebase.getUserDocument(currentUser.uid)
                 .then(userData=> {
@@ -202,7 +204,7 @@ class HallDetailScreen extends Component {
 
     render() {
         console.log('tabs', this.state.ordersTap )
-        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter} = this.state;
+        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId} = this.state;
         if (isLoading) {
             return (
               <AppLoading />
@@ -486,11 +488,17 @@ class HallDetailScreen extends Component {
 
                 </View>
             </ScrollView>
-            {user.manager  ? 
-            
-            <TouchableOpacity style={styles.minView} onPress={() => this.props.navigation.navigate('AddRoomScreen',{id:hallId,roomNum:this.state.roomNum})}>
-                <StyledText style={styles.minTXT}>أضف قاعة جديدة</StyledText>
+            {user.manager && user.uid === ownerId ? 
+            <View style={{display:"flex",flexDirection: "row"}}>
+            <TouchableOpacity style={styles.minView2} onPress={() => this.props.navigation.navigate('AddRoomScreen',{id:hallId,roomNum:this.state.roomNum})}>
+                <StyledText style={styles.minTXT2}>أضف قاعة جديدة</StyledText>
             </TouchableOpacity>
+
+            
+            <TouchableOpacity style={styles.minView2} onPress={()=> this.setState({modalVisible:true})}>
+                <StyledText style={styles.minTXT2}>أضف التواريخ المحجوزة مسبقا</StyledText>
+            </TouchableOpacity>
+            </View>
             :
         
 
@@ -535,8 +543,11 @@ class HallDetailScreen extends Component {
 
     register() {
         this.setState({modalVisible:false})
-        const {roomDetails,category} = this.state;
-   
+        
+        const {roomDetails,category,isAnonymousUser} = this.state;
+        if (isAnonymousUser){
+            this.props.navigation.navigate('LoginScreen');
+        }else {
         const roomPrice = roomDetails.filter(item => {
             if ( item.id === 0) return null;
             console.log('room',item.name);
@@ -544,7 +555,7 @@ class HallDetailScreen extends Component {
             if (item.name === category) return item
         })
 
-        console.log( roomPrice[0].price);
+      
        
 
         const fullOrderDate = new Date();
@@ -563,7 +574,7 @@ class HallDetailScreen extends Component {
             uid: this.state.user.uid,
             userName: this.state.user.displayName,
             userPhone: this.state.user.phone,
-            roomPrice: roomPrice[0].price
+            // roomPrice: roomPrice[0].price
         }).then(()=> {
             const dateObj = {
                 [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
@@ -576,7 +587,7 @@ class HallDetailScreen extends Component {
 
       
          this.props.navigation.navigate('BookingDoneStack');
-      
+        }
     }
 }
 
