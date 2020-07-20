@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Image,TouchableOpacity} from "react-native";
+import { View, ScrollView, StatusBar,Image,TouchableOpacity,ActivityIndicator} from "react-native";
 import styles from "./HomeScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
@@ -64,34 +64,11 @@ if (Platform.OS === 'android') {
                 {id:1,image:require('../../assets/images/sliderImage.png'),name:'صالة لارزوا'},
                 {id:2,image:require('../../assets/images/sliderImage.png'),name:'صالة لارزوا'},
             ],
-            mostWanted:[
-                {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:'30%'
-                },
-                {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-            ],
-            nearList:[
-                {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-             
-            ],
+            mostWanted:[],
+            nearList:[],
             activeIndex:0,
             user: {},
+            isLoading:true
       
     
         }
@@ -100,6 +77,36 @@ if (Platform.OS === 'android') {
     componentDidMount(){
         registerPushNotification();
         const currentUser = this.props.firebase.auth.currentUser;
+        firebase.firestore().collection('halls').limit(4).get()
+        .then((querySnapshot)  => {
+            querySnapshot.forEach((doc) => {
+            const hallData = doc.data();
+            let hallListData = [];
+            hallListData.push(
+                {id:doc.id,
+                image: hallData.hallImage,
+                name: hallData.name,
+                
+                location:hallData.address,
+                discount:null,
+                isFav: false,
+                uri:true
+                
+                }
+            )
+            this.setState(prevState => ({
+                mostWanted: [...prevState.mostWanted, ...hallListData]
+            }))
+
+            this.setState({isLoading:false});
+                
+        });
+        })
+        .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+
+     
         if(currentUser != null) {
             this.props.firebase.getUserDocument(currentUser.uid)
                 .then(userData=> {
@@ -109,14 +116,12 @@ if (Platform.OS === 'android') {
         }
 
 
-        setTimeout(()=> {
-            console.log(this.state.user.city)
+    
             const defaultCity = this.state.user.city !== undefined ? this.state.user.city : "غزة";
             firebase.firestore().collection('halls').where('address', "==" , defaultCity )
             .get().then((querySnapshot)  => {
                 querySnapshot.forEach((doc) => {
                 const hallData = doc.data();
-            
                 let hallListData = [];
                 hallListData.push(
                     {id:doc.id,
@@ -133,22 +138,30 @@ if (Platform.OS === 'android') {
                 this.setState(prevState => ({
                     nearList: [...prevState.nearList, ...hallListData]
                 }))
+
+                this.setState({isLoading:false});
                     
             });
             })
             .catch(function(error) {
             console.log("Error getting documents: ", error);
         });
-        
-        }, 5000)
 
-  
         
-
+        
     }
 
 
     render() {
+
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
     
         return (
         <View style={styles.containerStyle}> 
@@ -258,6 +271,8 @@ if (Platform.OS === 'android') {
             </ScrollView>
         </View>
         );
+
+        }
     }
 
     dot(){

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Modal,TouchableOpacity,ImageBackground, Picker} from "react-native";
+import { View, ScrollView, StatusBar,Modal,TouchableOpacity,ImageBackground, Picker,ActivityIndicator,Text} from "react-native";
 import styles from "./HallDetailScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
@@ -16,24 +16,12 @@ class HallDetailScreen extends Component {
         super(props);
         this.state = {
             Sliderimages:[
-                {id:0,image:require('../../assets/images/detailImage.png'),name:'صالة لارزوا'},
-                {id:1,image:require('../../assets/images/detailImage.png'),name:'صالة لارزوا'},
-                {id:2,image:require('../../assets/images/detailImage.png'),name:'صالة لارزوا'},
+               
             ],
             hallDetail:{
-                name:'اسم الصالة',
-                location:'دير البلح - البلد',
-                description:`يتم جمع وسائل التواصل المتاحة التي من ف شأنها تسهيل التواصل وإنشاء وتأكيد عضوية الاشتراك، على سبيل المثال وليس الحصر عل سبيل المثال وليس الحصر`,
+        
             },
-            roomDetails: [
-                {
-                    id:0,
-                    name: 'اسم القاعة',
-                    price: '2000$',
-                    numOfPeople: '200',
-                    services:''
-                }
-            ],
+            roomDetails: [{}],
             roomNum:1,
             ordersTap:[
                 {id:0,name:'معلومات التواصل',isSelect:false},
@@ -144,14 +132,6 @@ class HallDetailScreen extends Component {
                     this.setState({roomDetails:joined,
                     isLoading:false})
 
-                    // this.setState({roomDetails: this.state.roomDetails.map(item => {
-                    //     return ({
-                    //         name: roomData.roomName,
-                    //         numOfPeople: roomData.roomPersons,
-                    //         price: roomData.roomPrice + '$',
-                    //     })
-
-                    // })})
                       
                     
                 });
@@ -199,15 +179,41 @@ class HallDetailScreen extends Component {
         .catch(function(error) {
           console.log("Error getting documents: ", error);
       });
+
+
+      firebase.firestore().collection("hallImages").where('hallId', "==" , id).get()
+      .then((querySnapshot)  => {
+         querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        let hallListData = [];
+        hallListData.push(
+            { image: data.hallImage,caption:data.caption}
+        )
+
+        hallListData.push(
+            { image: data.roomImage,caption:data.caption}
+        )
+        this.setState(prevState => ({
+            Sliderimages: [...prevState.Sliderimages, ...hallListData]
+        }))
+
+        this.setState({isLoading:false});
+            
+    });
+    })
+    .catch(function(error) {
+    console.log("Error getting documents: ", error);
+    });
     }
 
 
     render() {
-        console.log('tabs', this.state.ordersTap )
         const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId} = this.state;
         if (isLoading) {
             return (
-              <AppLoading />
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
             );
           } else {
         return (
@@ -231,9 +237,12 @@ class HallDetailScreen extends Component {
                             {this.state.Sliderimages.map((item, index) => {
                                 return (
                                     <ImageBackground
-                                        style={styles.imageStyle} source={item.image}
+                                        style={styles.imageStyle} source={{uri:item.image}}
                                         key={item.id} imageStyle={styles.imageStyle} resizeMode='cover'
                                     >
+                                       {index === 0 ? 
+                                        <Text style={{color:"#fff",position:"absolute",top:"80%",right:10}}>{item.caption}</Text>
+                                        : <Text style={{color:"#fff",position:"absolute",top:"80%",right:10}}>{roomDetails[1].name}</Text>}
                                     </ImageBackground>
                                 )
                             })}  
@@ -311,6 +320,7 @@ class HallDetailScreen extends Component {
                                 </View>
                             </View>
                         </View>
+
                         :
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
@@ -465,8 +475,8 @@ class HallDetailScreen extends Component {
                             >
 
                             {this.state.roomDetails.map((item, index)=>(
-                                item.id === 0 ?  null :
-                            <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
+                                index === 0 ? null :
+                            <Picker.Item key={item.index} value={item.name} style={{textAlign: 'right'}} />
                                 
                             ))}
                             </Picker>
@@ -550,8 +560,6 @@ class HallDetailScreen extends Component {
         }else {
         const roomPrice = roomDetails.filter(item => {
             if ( item.id === 0) return null;
-            console.log('room',item.name);
-            console.log('category',category);
             if (item.name === category) return item
         })
 

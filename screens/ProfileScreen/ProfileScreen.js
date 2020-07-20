@@ -67,21 +67,22 @@ class ProfileScreen extends Component {
     componentDidMount() {
         const currentUser = this.props.firebase.auth.currentUser;
        firebase.firestore().collection('users').doc(currentUser.uid)
-        .onSnapshot((doc) => {
-            AsyncStorage.setItem(`${currentUser.uid}`, JSON.stringify(doc.data()))
+        .onSnapshot((UserDocument) => {
+            AsyncStorage.setItem(`${currentUser.uid}`, JSON.stringify(UserDocument.data()))
                 .then(()=>this.getUserData(currentUser));
 
                 
-            console.log("Current data: ", doc.data());
+            console.log("Current data: ", UserDocument.data());
+      
+            if(currentUser != null && !currentUser.isAnonymous) {
+                this.setState({uid:currentUser.uid});
+            this.getUserData(currentUser);
+            this.setState({photoURL:UserDocument.data().photoURL,
+                isAnonymousUser:false});
+            }else {
+                this.setState({isAnonymousUser:true})
+            }
         });
-        if(currentUser != null && !currentUser.isAnonymous) {
-            this.setState({uid:currentUser.uid});
-           this.getUserData(currentUser);
-           this.setState({photoURL:doc.data().photoURL,
-            isAnonymousUser:false});
-        }else {
-            this.setState({isAnonymousUser:true})
-        }
     }
 
     async storeUserData(user) {

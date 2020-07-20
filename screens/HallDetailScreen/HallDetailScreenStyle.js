@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     dotCont:{flexDirection:'row',justifyContent:'center',alignItems:'center',position:'absolute',bottom:35,
         width:width
     },
-    imageStyle: { height: 300,height:'100%', width:'100%'},//height:270
+    imageStyle: {position:"relative", height: 300,height:'100%', width:'100%',flex:1,  justifyContent: "flex-end",alignItems:"flex-end"},//height:270
 
     whiteView:{flex:2,width:'100%',backgroundColor:'#fff',borderTopLeftRadius:30,borderTopRightRadius:30,
         marginTop:-30,paddingTop:10,paddingHorizontal:10,paddingBottom:30

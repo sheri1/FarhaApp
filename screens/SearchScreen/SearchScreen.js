@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,TouchableOpacity,Image,Modal,TextInput,Switch} from "react-native";
+import { View, ScrollView, StatusBar,TouchableOpacity,Image,Modal,TextInput,Switch,ActivityIndicator} from "react-native";
 import styles from "./SearchScreenStyle";
 import Constants from 'expo-constants'
 import StyledText from '../../components/StyledTexts/StyledText'
@@ -42,7 +42,9 @@ import { withFirebaseHOC } from '../../config/Firebase'
       mostBooked:true,
       minPrice:'',
       maxPrice:'',
-      user: {}
+      user: {},
+      isLoading:true,
+      result:true
     }
     }
 
@@ -69,6 +71,8 @@ import { withFirebaseHOC } from '../../config/Firebase'
       this.setState(prevState => ({
         searchList: [...prevState.searchList, ...hallListData]
       }))
+
+      this.setState({isLoading: false})
             
     });
     })
@@ -80,6 +84,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
 
 
   selectItem = (id) => {
+    this.setState({isLoading: true});
     let listDataCopy = JSON.parse(JSON.stringify(this.state.regionsList));
     listDataCopy.forEach((elem) => {
       elem.isSelect = false;
@@ -87,6 +92,25 @@ import { withFirebaseHOC } from '../../config/Firebase'
         elem.isSelect = true;
       }
     });
+
+    const filter = listDataCopy[id].name;
+    this.setState({
+      regionsList: listDataCopy,
+      reginFilter: filter,
+    });
+
+   
+    setTimeout(()=>this.onRigonChange(),1000)
+
+    
+
+   
+
+    
+  }
+
+  onRigonChange() {
+    console.log('onClick' , this.state.reginFilter);
 
     if (this.state.reginFilter === "الكل") {
       firebase.firestore().collection('halls')
@@ -109,6 +133,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
         this.setState(prevState => ({
           searchList: [...hallListData]
         }))
+        this.setState({isLoading:false})
               
       });
       })
@@ -116,17 +141,22 @@ import { withFirebaseHOC } from '../../config/Firebase'
       console.log("Error getting documents: ", error);
       });
     }else {
-  
+
         firebase.firestore().collection('halls').where('address', "==" , this.state.reginFilter )
             .get().then((querySnapshot)  => {
+              console.log(querySnapshot.size);
+              if (querySnapshot.size === 0) {
+                this.setState({result:false,
+                isLoading:false});
+              }
                 querySnapshot.forEach((doc) => {
                 const hallData = doc.data();
-                let hallListData = [];
-                hallListData.push(
+  
+                let searchList = [];
+                searchList.push(
                     {id:doc.id,
                     image: hallData.hallImage,
                     name: hallData.name,
-                    
                     location:hallData.address,
                     discount:null,
                     isFav: false,
@@ -135,8 +165,11 @@ import { withFirebaseHOC } from '../../config/Firebase'
                     }
                 )
                 this.setState(prevState => ({
-                  searchList: [...hallListData]
+                  searchList: [...prevState.searchList,...hallListData]
                 }))
+
+                this.setState({isLoading:false,
+                  result:true})
                     
             });
             })
@@ -144,14 +177,6 @@ import { withFirebaseHOC } from '../../config/Firebase'
             console.log("Error getting documents: ", error);
         });
       }
-
-    const filter = listDataCopy[id].name;
-    this.setState({
-      regionsList: listDataCopy,
-      reginFilter: filter,
-    });
-
-    
   }
 
   ratingCompleted(rating) {
@@ -176,7 +201,15 @@ import { withFirebaseHOC } from '../../config/Firebase'
   }
 
   render() {
-    
+    console.log('region',this.state.reginFilter);
+    const {isLoading} = this.state;
+    if (isLoading) {
+        return (
+            <View style={{flex: 1, justifyContent: "center"}}>
+                 <ActivityIndicator size="large" color="#924480" />
+            </View>
+        );
+      } else {
     return (
       <View style={styles.containerStyle}>          
         <View style={styles.StatusBar}>
@@ -232,7 +265,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
             </View>
 
             <View style={{width: '100%'}}>
-              {this.state.searchList.length > 0 ?
+              {this.state.result ?
                 <>
                   <View style={styles.storiesImagesCont}>
                     <SearchList 
@@ -378,6 +411,8 @@ import { withFirebaseHOC } from '../../config/Firebase'
         </View>
       </View>
     );
+
+                  }
   }
 
   updateSearch = (search) => {

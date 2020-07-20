@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity,ImageBackground} from "react-native";
+import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity,ImageBackground,ActivityIndicator} from "react-native";
 import styles from "./EditProfileScreenStyle";
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
 import StyledText from '../../components/StyledTexts/StyledText'
@@ -21,7 +21,8 @@ class EditProfileScreen extends Component {
             city:'',
             image:'',
             photoURL:'',
-            errors:{}       
+            errors:{} ,
+            isLoading:false      
         }
     }
 
@@ -66,17 +67,21 @@ class EditProfileScreen extends Component {
     uploadImage = async (path, imageName) => {
         const response = await fetch(path);
         const blob = await response.blob();
-    
+        this.setState({photoURL:null,isLoading:true});
         const ref = firebase.storage().ref().child("images/" + imageName);
         return ref.put(blob).then(() => { //After store the image -> get the url of it 
                 ref.getDownloadURL()
                 .then(url=>{
-                    this.setState({photoURL:url});
+                    this.setState({photoURL:url,isLoading:false}
+                    );
                 })
         })
+        
+        
     }
 
     validation = () => {
+        console.log('photo',this.state.photoURL)
         const {displayName,phone,city} = this.state;
         let isValid = true;
         let errors = {};
@@ -112,7 +117,7 @@ class EditProfileScreen extends Component {
             if(currentUser != null) {
                 this.props.firebase.updateUserDocument(currentUser.uid,userData)
                 .then(function() {
-                    
+                    console.log(photoURL);
                     currentUser.updateProfile({displayName,phone,photoURL})
                     .then (()=> {
                         alert("تم تحديث بياناتك بنجاح");
@@ -127,7 +132,7 @@ class EditProfileScreen extends Component {
     }
 
     render() {
-        const {displayName,phone,city,photoURL,errors} = this.state;
+        const {displayName,phone,city,photoURL,errors,isLoading} = this.state;
         return (
         <View style={styles.containerStyle}>    
             <ScrollView
@@ -145,6 +150,14 @@ class EditProfileScreen extends Component {
                 </View>
             </View>
 
+            {isLoading ? 
+            
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+           :
+         
+        
             <View style={{width:'100%',justifyContent:'center',alignItems:'center',top:-20,zIndex:2,height:50}}>
                 {!this.state.image ? 
                 (
@@ -169,7 +182,7 @@ class EditProfileScreen extends Component {
                     </ImageBackground>
                 )} 
             </View>
-
+            }
             {/* <View style={{ width: '100%',marginTop: 10}}> */}
                 <ScrollView
                     style={{ width: '100%' }}
