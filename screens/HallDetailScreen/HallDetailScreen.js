@@ -474,11 +474,12 @@ class HallDetailScreen extends Component {
                             onValueChange={(category, itemIndex) => this.setState({category})}
                             >
 
-                            {this.state.roomDetails.map((item, index)=>(
-                                index === 0 ? null :
-                            <Picker.Item key={item.index} value={item.name} style={{textAlign: 'right'}} />
+                            {this.state.roomDetails.map((item, index)=>{
+                              return  index === 0 ?  null :
+                            
+                            <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
                                 
-                            ))}
+                            })}
                             </Picker>
                             </View>
                         </View>

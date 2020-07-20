@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity} from "react-native";
+import { View, ScrollView, StatusBar,Image,TextInput,TouchableOpacity,ActivityIndicator} from "react-native";
 import styles from "./BookingDoneScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import StyledTextBold from '../../components/StyledTexts/StyledTextBold'
@@ -12,23 +12,33 @@ export default class BookingDoneScreen extends Component {
         this.state = {
             spinner: false,
             isConnected: null,
-            isManager:false
+            isManager:false,
+            isLoading:true,
         }
     }
 
     componentDidMount(){
         const currentUser = firebase.auth().currentUser;
+        console.log(currentUser)
         firebase.firestore().collection('users').doc(currentUser.uid)
             .get()
             .then(user => {
-                if (user.manager) {
-                    this.setState({isManager:true})
+                if (user.data().manager) {
+                    this.setState({isManager:true,
+                    isLoading:false})
                 }
             })
     }
 
     render() {
-        const {isManager} = this.state;
+        const {isManager,isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -60,5 +70,6 @@ export default class BookingDoneScreen extends Component {
             </View>
         </View>
         );
+                }
     }
 }
