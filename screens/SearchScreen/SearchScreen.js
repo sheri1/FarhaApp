@@ -149,10 +149,9 @@ import { withFirebaseHOC } from '../../config/Firebase'
                 this.setState({result:false,
                 isLoading:false});
               }
+              let searchList = [];
                 querySnapshot.forEach((doc) => {
                 const hallData = doc.data();
-  
-                let searchList = [];
                 searchList.push(
                     {id:doc.id,
                     image: hallData.hallImage,
@@ -164,14 +163,10 @@ import { withFirebaseHOC } from '../../config/Firebase'
                     
                     }
                 )
-                this.setState(prevState => ({
-                  searchList: [...prevState.searchList,...hallListData]
-                }))
-
-                this.setState({isLoading:false,
-                  result:true})
-                    
+         
             });
+            this.setState({searchList,isLoading:false,
+              result:true})
             })
             .catch(function(error) {
             console.log("Error getting documents: ", error);
