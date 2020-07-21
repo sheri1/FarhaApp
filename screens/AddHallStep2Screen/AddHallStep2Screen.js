@@ -217,7 +217,7 @@ export default class AddHallStep2Screen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="phone-pad"
+                                keyboardType="default"
                                 ref={(input) => {this.secondTextInput = input}}
                                 onSubmitEditing={() => {this.thirdTextInput.focus()}}
                                 onChangeText={(roomPrice) => this.setState({ roomPrice })}
@@ -307,11 +307,11 @@ export default class AddHallStep2Screen extends Component {
                             <StyledTextBold style={styles.InputContainer2Tilte}>سعر الخدمة ($) : </StyledTextBold>
                             <View style={styles.inputCont}>
                             <TextInput
-                                placeholder="****"
+                                placeholder="أضف 0 اذا كانت مجانية"
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="phone-pad"
+                                keyboardType="default"
                                 ref={(input) => {this.fifthTextInput = input}}
                                 onSubmitEditing={() => {this.nextAddHall()}}
                                 onChangeText={(servicePrice) => this.setState({ servicePrice })}

@@ -272,7 +272,7 @@ export default class AddHallScreen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="phone-pad"
+                                keyboardType="default"
                                 ref={(input) => {this.EighthTextInput = input}}
                                 onSubmitEditing={() => {this.nextAddHall()}}
                                 onChangeText={(earnest) => this.setState({ earnest })}
