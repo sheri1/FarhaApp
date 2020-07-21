@@ -129,8 +129,20 @@ class RegisterScreen extends Component {
           const uid = currentUser.user.uid;
           const userData = { email, displayName, phone,city,uid };
           await this.props.firebase.createUserDocument(user,userData);
-          this.props.navigation.navigate('RegisterDoneScreen');
         }
+
+        setTimeout(()=> {
+          const currentUser = this.props.firebase.auth.currentUser;
+        if(currentUser != null) {
+            currentUser.sendEmailVerification().then(function() {
+                // Email sent.
+                alert('يرجى مراجعة بريدك الالكتروني لتأكيد التسجيل');
+              }).catch(function(error) {
+                // An error happened.
+                alert('error')
+              });
+        }
+        },3000)
 
       } catch (err) {
         alert('email already used')

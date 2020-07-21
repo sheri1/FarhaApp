@@ -71,13 +71,27 @@ class LoginScreen extends Component {
 
       const credential = firebase.auth.FacebookAuthProvider.credential(token)
 
-      firebase.auth().signInWithCredential(credential)
-      .then(result => {
-        //create user profile 
-        console.log(result);
-      }).catch((error) => {
-        console.log(error)
-      })
+     firebase.auth().signInWithCredential(credential)
+     .then(currentUser => {
+      console.log(currentUser.user.uid);
+      if(currentUser.user){
+        const user = currentUser.user;
+        const uid = currentUser.user.uid;
+          firebase.firestore().doc(`users/${uid}`).set({
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            city:'غزة',
+            uid:user.uid,
+            phone:'',
+            createdAt:new Date(),
+          }).then(()=>{
+            this.props.navigation.navigate('HomeScreen')
+          })
+      
+      }
+
+    })
     }
     } catch (error){
       console.log('error ',error)
