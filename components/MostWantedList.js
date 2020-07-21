@@ -25,7 +25,7 @@ export default class MostWantedList extends React.Component {
                 renderItem={({item, index})=>(
                     <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}>
                         <View style={styles.ImageCont}>
-                            <Image source={item.image} style={{width:120,height:100}} resizeMode='contain'/>
+                            <Image source={{uri:item.image}} style={{width:120,height:100}} resizeMode='contain'/>
                             
                             {item.discount &&
                             <View style={styles.discount}>
@@ -46,7 +46,9 @@ export default class MostWantedList extends React.Component {
                         </View>
                         {/* <View style={styles.spaceCont}>
                             <StyledText style={styles.blueTXT}>{item.price}</StyledText>
+                        
                         </View> */}
+
                         <View style={styles.titleCont}>
                             <StyledText numberOfLines={2} style={styles.title}>{item.name}</StyledText>
                         </View>

@@ -79,9 +79,9 @@ if (Platform.OS === 'android') {
         const currentUser = this.props.firebase.auth.currentUser;
         firebase.firestore().collection('halls').limit(4).get()
         .then((querySnapshot)  => {
+            let hallListData = [];
             querySnapshot.forEach((doc) => {
             const hallData = doc.data();
-            let hallListData = [];
             hallListData.push(
                 {id:doc.id,
                 image: hallData.hallImage,
@@ -94,13 +94,12 @@ if (Platform.OS === 'android') {
                 
                 }
             )
-            this.setState(prevState => ({
-                mostWanted: [...prevState.mostWanted, ...hallListData]
-            }))
-
-            this.setState({isLoading:false});
                 
         });
+        this.setState(prevState => ({
+            mostWanted: [...prevState.mostWanted, ...hallListData]
+        }))
+
         })
         .catch(function(error) {
         console.log("Error getting documents: ", error);
@@ -118,11 +117,11 @@ if (Platform.OS === 'android') {
 
     
             const defaultCity = this.state.user.city !== undefined ? this.state.user.city : "غزة";
-            firebase.firestore().collection('halls').where('address', "==" , defaultCity )
+            firebase.firestore().collection('halls').where('address', "==" , defaultCity ).limit(4)
             .get().then((querySnapshot)  => {
+                let hallListData = [];
                 querySnapshot.forEach((doc) => {
                 const hallData = doc.data();
-                let hallListData = [];
                 hallListData.push(
                     {id:doc.id,
                     image: hallData.hallImage,
@@ -135,13 +134,14 @@ if (Platform.OS === 'android') {
                     
                     }
                 )
-                this.setState(prevState => ({
-                    nearList: [...prevState.nearList, ...hallListData]
-                }))
-
-                this.setState({isLoading:false});
-                    
             });
+            
+            this.setState(prevState => ({
+                nearList: [...prevState.nearList, ...hallListData]
+            }))
+
+            this.setState({isLoading:false});
+                
             })
             .catch(function(error) {
             console.log("Error getting documents: ", error);
@@ -248,7 +248,7 @@ if (Platform.OS === 'android') {
         <>
                     <View style={styles.HomeSliderCont}>
                         <TouchableOpacity style={styles.showMoreCont}
-                            onPress={()=>this.props.navigation.navigate('NearScreen')}
+                            onPress={()=>this.props.navigation.navigate('NearScreen',{city:this.state.user.city})}
                         >
                             <StyledText style={styles.showMoreTitle}>
                                 عرض الجميع

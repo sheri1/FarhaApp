@@ -1,40 +1,59 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar } from "react-native";
+import { View, ScrollView, StatusBar,ActivityIndicator } from "react-native";
 import styles from "./MostWantedScreenStyle";
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
 import MostWantedList from '../../components/MostWantedList'
-
+import * as firebase from 'firebase';
 export default class MostWantedScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mostWanted:[
-                {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-                {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:false
-                },
-                {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-                {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:false
-                },
-                {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:6,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-            ]
+            mostWanted:[],
+            isLoading:true
         }
     }
     
+    componentDidMount() {
+        firebase.firestore().collection('halls').get()
+        .then((querySnapshot)  => {
+            let hallListData = [];
+            querySnapshot.forEach((doc) => {
+            const hallData = doc.data();
+            hallListData.push(
+                {id:doc.id,
+                image: hallData.hallImage,
+                name: hallData.name,
+                
+                location:hallData.address,
+                discount:null,
+                isFav: false,
+                uri:true
+                
+                }
+            )
+                
+        });
+        this.setState(prevState => ({
+            mostWanted: [...prevState.mostWanted, ...hallListData]
+        }))
+
+        this.setState({isLoading:false})
+
+        })
+        .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+    }
     render() {
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
+    
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -64,5 +83,6 @@ export default class MostWantedScreen extends Component {
             </ScrollView>
         </View>
         );
+    }
     }
 }

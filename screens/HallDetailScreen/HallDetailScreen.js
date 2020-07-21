@@ -40,6 +40,7 @@ class HallDetailScreen extends Component {
             ownerId: null,
             isLoading:true,
             category: "",
+            earnest:'',
             markedDates: {   '2020-07-16': 
             {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
         },
@@ -72,7 +73,8 @@ class HallDetailScreen extends Component {
                     const docData = doc.data();
                     this.setState({
                         roomNum: docData.roomNum,
-                        ownerId: docData.owner
+                        ownerId: docData.owner,
+                        earnest:docData.earnest
                     }
                     );
                     const hallData = {
@@ -115,9 +117,9 @@ class HallDetailScreen extends Component {
         const roomsRef = firebase.firestore().collection("rooms");
         const query = roomsRef.where("hallId", "==",id)
               .get().then((querySnapshot)  => {
+                let roomListDetails = [];
                   querySnapshot.forEach((doc) => {
                     const roomData = doc.data();
-                    let roomListDetails = [];
                     roomListDetails.push(
                       
                       {
@@ -129,13 +131,12 @@ class HallDetailScreen extends Component {
                         }
                     )
                     var joined = this.state.roomDetails.concat(roomListDetails)
-                    this.setState({roomDetails:joined,
-                    isLoading:false})
-
-                      
-                    
+                
                 });
-              })
+ 
+                this.setState({roomDetails:joined,
+                    isLoading:false})
+            })
               .catch(function(error) {
                 console.log("Error getting documents: ", error);
             });
@@ -183,9 +184,9 @@ class HallDetailScreen extends Component {
 
       firebase.firestore().collection("hallImages").where('hallId', "==" , id).get()
       .then((querySnapshot)  => {
+        let hallListData = [];
          querySnapshot.forEach((doc) => {
         const data = doc.data();
-        let hallListData = [];
         hallListData.push(
             { image: data.hallImage,caption:data.caption}
         )
@@ -193,13 +194,15 @@ class HallDetailScreen extends Component {
         hallListData.push(
             { image: data.roomImage,caption:data.caption}
         )
-        this.setState(prevState => ({
-            Sliderimages: [...prevState.Sliderimages, ...hallListData]
-        }))
-
-        this.setState({isLoading:false});
             
     });
+
+    this.setState(prevState => ({
+        Sliderimages: [...prevState.Sliderimages, ...hallListData]
+    }))
+
+    this.setState({isLoading:false});
+    
     })
     .catch(function(error) {
     console.log("Error getting documents: ", error);
@@ -553,6 +556,7 @@ class HallDetailScreen extends Component {
     }
 
     register() {
+        console.log(this.state.earnest);
         this.setState({modalVisible:false})
         
         const {roomDetails,category,isAnonymousUser} = this.state;
@@ -594,8 +598,12 @@ class HallDetailScreen extends Component {
             //alert('لتأكيد الحجز يرجى التوجه للصالة لدفع العربون في خلال 3 أيام')
         })
 
-      
-         this.props.navigation.navigate('BookingDoneStack');
+        const hallInfo = {
+            earnest:this.state.earnest,
+            isManager:this.state.user.manager
+        }
+       
+         this.props.navigation.navigate('BookingDoneScreen',{info:hallInfo});
         }
     }
 }

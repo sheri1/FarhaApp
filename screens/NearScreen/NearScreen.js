@@ -1,40 +1,65 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar } from "react-native";
+import { View, ScrollView, StatusBar,ActivityIndicator } from "react-native";
 import styles from "./NearScreenStyle";
 import HeaderBack from '../../components/HeadersComponent/HeaderBack'
 import NearList from '../../components/NearList'
+import * as firebase from 'firebase';
 
 export default class NearScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nearlist:[
-                {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-                {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:2,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:false
-                },
-                {id:3,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:true
-                },
-                {id:4,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:false
-                },
-                {id:5,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'30%',isFav:false
-                },
-                {id:6,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-            ]
+            nearList:[],
+            isLoading:true,
+            count:false
         }
     }
     
+    componentDidMount() {
+        const info = this.props.navigation.getParam('city');
+
+        const defaultCity = this.state.city !== undefined ? this.state.city : "غزة";
+        firebase.firestore().collection('halls').where("address", "==" , info )
+            .get().then((querySnapshot)  => {
+                if(querySnapshot.size === 0) {this.setState({count:false})}
+                let hallListData = [];
+                querySnapshot.forEach((doc) => {
+                const hallData = doc.data();
+                hallListData.push(
+                    {id:doc.id,
+                    image: hallData.hallImage,
+                    name: hallData.name,
+                    
+                    location:hallData.address,
+                    discount:null,
+                    isFav: false,
+                    uri:true
+                    
+                    }
+                )
+            });
+            
+            this.setState(prevState => ({
+                nearList: [...prevState.nearList, ...hallListData]
+            }))
+
+            this.setState({isLoading:false,count:true});
+                
+            })
+            .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+
+    }
     render() {
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -50,7 +75,7 @@ export default class NearScreen extends Component {
                 snapToStart={true}
             >     
                 <View style={{width: '100%',height:'100%',paddingBottom: 50}}>
-                {this.state.nearlist.length > 0 &&
+                {this.state.count &&
                 <>
                     <View style={styles.storiesImagesCont}>
                         <NearList 
@@ -64,5 +89,7 @@ export default class NearScreen extends Component {
             </ScrollView>
         </View>
         );
+
+            }
     }
 }

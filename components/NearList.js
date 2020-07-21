@@ -25,7 +25,7 @@ export default class NearList extends React.Component {
                 renderItem={({item, index})=>(
                     <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}>
                         <View style={styles.ImageCont}>
-                            <Image source={item.image} style={{width:120,height:100}} resizeMode='contain'/>
+                            <Image source={{uri:item.image}} style={{width:120,height:100}} resizeMode='contain'/>
                             {item.discount &&
                             <View style={styles.discount}>
                                 <StyledText style={styles.discountTXT}>عرض {item.discount}</StyledText>

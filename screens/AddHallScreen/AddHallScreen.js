@@ -23,6 +23,7 @@ export default class AddHallScreen extends Component {
             imagesScrollVisibile: false,
             errors: {},
             step1:true,
+            earnest:''
         }
     }
 
@@ -52,7 +53,7 @@ export default class AddHallScreen extends Component {
 
     validation() {
         let isValid = true;
-        const {hallName,hallAddress,hallDescription,photos,errors,numOfRoom} = this.state;
+        const {hallName,hallAddress,hallDescription,photos,errors,numOfRoom,earnest} = this.state;
         if (!hallName) {
             isValid = false;
             errors["hallName"] = "الرجاء ادخال اسم الصالة"
@@ -71,6 +72,11 @@ export default class AddHallScreen extends Component {
         if (!numOfRoom) {
             isValid = false;
             errors["numOfRoom"] = "الرجاء إدخال عدد قاعات الصالة"
+        }
+
+        if(!earnest) {
+            isValid = false;
+            errors["earnest"] = "الرجاء إضافة قيمة العربون"
         }
         if (photos.length === 0) {
             isValid = false;
@@ -248,7 +254,7 @@ export default class AddHallScreen extends Component {
                                 returnKeyType={"next"}
                                 keyboardType="phone-pad"
                                 ref={(input) => {this.SeventhTextInput = input}}
-                                onSubmitEditing={() => {this.nextAddHall()}}
+                                onSubmitEditing={() => {this.EighthTextInput()}}
                                 onChangeText={(numOfRoom) => this.setState({ numOfRoom })}
                                 blurOnSubmit={false}
                                 style={styles.Input}
@@ -257,6 +263,26 @@ export default class AddHallScreen extends Component {
                         </View>
 
                        <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["numOfRoom"]}</StyledText>
+
+                       <View style={styles.InputContainer2}>
+                            <StyledTextBold style={styles.InputContainer2Tilte}>العربون : </StyledTextBold>
+                            <View style={styles.inputCont}>
+                            <TextInput
+                                placeholder="50$"
+                                placeholderTextColor="#A2A2A2"
+                                underlineColorAndroid="transparent"
+                                returnKeyType={"next"}
+                                keyboardType="phone-pad"
+                                ref={(input) => {this.EighthTextInput = input}}
+                                onSubmitEditing={() => {this.nextAddHall()}}
+                                onChangeText={(earnest) => this.setState({ earnest })}
+                                blurOnSubmit={false}
+                                style={styles.Input}
+                            />
+                            </View>
+                        </View>
+
+                       <StyledText style={{color:'#F00',fontSize:12,marginBottom:15,paddingHorizontal:10}}>{errors["earnest"]}</StyledText>
 
                     </View>
 
@@ -285,7 +311,8 @@ export default class AddHallScreen extends Component {
             hallDescription:this.state.hallDescription,
             hallPhotos:this.state.photos,
             numOfRoom:this.state.numOfRoom,
-            category:this.state.category
+            category:this.state.category,
+            earnest:this.state.earnest
         }
        
         if(this.validation()){

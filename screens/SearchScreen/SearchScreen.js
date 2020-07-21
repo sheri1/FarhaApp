@@ -53,9 +53,9 @@ import { withFirebaseHOC } from '../../config/Firebase'
   componentDidMount () {
     firebase.firestore().collection('halls')
     .get().then((querySnapshot)  => {
+      let hallListData = [];
       querySnapshot.forEach((doc) => {
       const hallData = doc.data();
-      let hallListData = [];
       hallListData.push(
           {id:doc.id,
           image: hallData.hallImage,
@@ -68,13 +68,16 @@ import { withFirebaseHOC } from '../../config/Firebase'
           
           }
       )
-      this.setState(prevState => ({
-        searchList: [...prevState.searchList, ...hallListData]
-      }))
-
-      this.setState({isLoading: false})
-            
     });
+
+    
+    this.setState(prevState => ({
+      searchList: [...prevState.searchList, ...hallListData]
+    }))
+
+    this.setState({isLoading: false})
+          
+
     })
     .catch(function(error) {
     console.log("Error getting documents: ", error);
@@ -101,23 +104,16 @@ import { withFirebaseHOC } from '../../config/Firebase'
 
    
     setTimeout(()=>this.onRigonChange(),1000)
-
-    
-
-   
-
     
   }
 
   onRigonChange() {
-    console.log('onClick' , this.state.reginFilter);
-
     if (this.state.reginFilter === "الكل") {
       firebase.firestore().collection('halls')
       .get().then((querySnapshot)  => {
+        let hallListData = [];
         querySnapshot.forEach((doc) => {
         const hallData = doc.data();
-        let hallListData = [];
         hallListData.push(
             {id:doc.id,
             image: hallData.hallImage,
@@ -130,12 +126,13 @@ import { withFirebaseHOC } from '../../config/Firebase'
             
             }
         )
-        this.setState(prevState => ({
-          searchList: [...hallListData]
-        }))
-        this.setState({isLoading:false})
-              
+      
       });
+
+      this.setState(prevState => ({
+        searchList: [...hallListData]
+      }))
+      this.setState({isLoading:false})
       })
       .catch(function(error) {
       console.log("Error getting documents: ", error);
