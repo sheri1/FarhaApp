@@ -254,7 +254,7 @@ export default class AddHallScreen extends Component {
                                 returnKeyType={"next"}
                                 keyboardType="phone-pad"
                                 ref={(input) => {this.SeventhTextInput = input}}
-                                onSubmitEditing={() => {this.EighthTextInput()}}
+                                onSubmitEditing={() => {this.EighthTextInput.focus()}}
                                 onChangeText={(numOfRoom) => this.setState({ numOfRoom })}
                                 blurOnSubmit={false}
                                 style={styles.Input}

@@ -110,20 +110,16 @@ export default class OrderList extends React.Component {
         firebase.firestore().collection('registration').doc(id)
         .update({
             orderStatus: true
-        }).then(()=>{
-            this.setState({accepted:true})
         })
     }
 
     reject(hallId, userId,roomName) {
-        console.log(userId)
         let userInfo = firebase.firestore().collection("users");
         let query = userInfo.where("uid", "==", userId)
                 .get()
                 .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                 let expoToken = doc.data().expoPushToken;
-                     console.log('token',expoToken);
                      this.sendPushNotification(expoToken,roomName);
                    });
                 })

@@ -235,7 +235,7 @@ export default class AddRoomScreen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="phone-pad"
+                                keyboardType="default"
                                 ref={(input) => {this.secondTextInput = input}}
                                 onSubmitEditing={() => {this.thirdTextInput.focus()}}
                                 onChangeText={(roomPrice) => this.setState({ roomPrice })}
@@ -329,7 +329,7 @@ export default class AddRoomScreen extends Component {
                                 placeholderTextColor="#A2A2A2"
                                 underlineColorAndroid="transparent"
                                 returnKeyType={"next"}
-                                keyboardType="phone-pad"
+                                keyboardType="default"
                                 ref={(input) => {this.fifthTextInput = input}}
                                 onSubmitEditing={() => {this.AddRoom()}}
                                 onChangeText={(servicePrice) => this.setState({ servicePrice })}
@@ -378,7 +378,7 @@ export default class AddRoomScreen extends Component {
             const ref = firebase.firestore().collection('rooms').add(roomsData)
             .then(()=>{
                firebase.firestore().collection('halls').doc(hallId).update({
-                    roomNum: roomNumber + 1,
+                    roomNum: Number(roomNumber) + 1,
                 })
                 .then(()=>console.log('done'))
                 .catch(e=>console.log(e))

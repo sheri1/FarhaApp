@@ -30,9 +30,9 @@ export default class ChangePasswordScreen extends Component {
     this.reauthenticate(this.state.oldPass).then(() => {
       var user = firebase.auth().currentUser;
       user.updatePassword(this.state.newPass).then(() => {
-        alert("Password successfully updated!");
-      }).catch((error) => { console.log(error.message); });
-    }).catch((error) => { console.log(error.message) });
+        alert("تم تغيير كلمة المرور بنجاح");
+      }).catch((error) => { alert(error.message); });
+    }).catch((error) => { alert(error.message) });
   }
 
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,TouchableOpacity,Image} from "react-native";
+import { View, ScrollView, StatusBar,TouchableOpacity,Image,ActivityIndicator} from "react-native";
 import styles from "./ManagerOrdersScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
@@ -11,8 +11,8 @@ export default class ManagerOrdersScreen extends Component {
         super(props);
         this.state = {
         
-            orderList:[
-            ]
+            orderList:[],
+            isLoading:true
         }
     }
 
@@ -21,13 +21,10 @@ export default class ManagerOrdersScreen extends Component {
         console.log('id',userId.uid);
         firebase.firestore().collection('registration')
         .where("managerId",  '==', userId.uid)
-        .get()
-        .then((querySnapshot)  => {
-            // console.log('q',querySnapshot)
+        .onSnapshot((querySnapshot) => {
+            let DatesList = [];
             querySnapshot.forEach((doc) => {
               const orderData = doc.data();
-              console.log('ff',orderData);
-              let DatesList = [];
               DatesList.push(
                 
                 {
@@ -42,19 +39,25 @@ export default class ManagerOrdersScreen extends Component {
                  orderStatus: orderData.orderStatus
                 }
               )
-              var joined = this.state.orderList.concat(DatesList)
-              this.setState({orderList:joined})
-
             
           });
-        })
-        .catch(function(error) {
-          console.log("Error getting documents: ", error);
-      });
 
+         
+          this.setState({orderList:DatesList,isLoading:false})
+
+        })
+    
     }
 
     render() {
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -93,5 +96,6 @@ export default class ManagerOrdersScreen extends Component {
             </ScrollView>
         </View>
         );
+                }
     }
 }

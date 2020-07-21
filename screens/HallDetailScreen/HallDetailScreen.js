@@ -21,7 +21,7 @@ class HallDetailScreen extends Component {
             hallDetail:{
         
             },
-            roomDetails: [{}],
+            roomDetails: [],
             roomNum:1,
             ordersTap:[
                 {id:0,name:'معلومات التواصل',isSelect:false},
@@ -120,8 +120,7 @@ class HallDetailScreen extends Component {
                 let roomListDetails = [];
                   querySnapshot.forEach((doc) => {
                     const roomData = doc.data();
-                    roomListDetails.push(
-                      
+                    roomListDetails.push( 
                       {
                         // image: roomData.hallImage,
                         name: roomData.roomName,
@@ -130,10 +129,8 @@ class HallDetailScreen extends Component {
                       
                         }
                     )
-                    var joined = this.state.roomDetails.concat(roomListDetails)
-                
                 });
- 
+                var joined = this.state.roomDetails.concat(roomListDetails)
                 this.setState({roomDetails:joined,
                     isLoading:false})
             })
@@ -211,7 +208,8 @@ class HallDetailScreen extends Component {
 
 
     render() {
-        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId} = this.state;
+        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId,category} = this.state;
+        console.log(category);
         if (isLoading) {
             return (
                 <View style={{flex: 1, justifyContent: "center"}}>
@@ -477,10 +475,10 @@ class HallDetailScreen extends Component {
                             onValueChange={(category, itemIndex) => this.setState({category})}
                             >
 
-                            {this.state.roomDetails.map((item, index)=>{
-                              return  index === 0 ?  null :
-                            
-                            <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
+                            {
+                                this.state.roomDetails.map((item, index)=>{
+                
+                           return <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
                                 
                             })}
                             </Picker>
@@ -564,12 +562,8 @@ class HallDetailScreen extends Component {
             this.props.navigation.navigate('LoginScreen');
         }else {
         const roomPrice = roomDetails.filter(item => {
-            if ( item.id === 0) return null;
             if (item.name === category) return item
         })
-
-      
-       
 
         const fullOrderDate = new Date();
         const year = fullOrderDate.getFullYear();
@@ -587,7 +581,7 @@ class HallDetailScreen extends Component {
             uid: this.state.user.uid,
             userName: this.state.user.displayName,
             userPhone: this.state.user.phone,
-            // roomPrice: roomPrice[0].price
+            roomPrice: roomPrice[0].price
         }).then(()=> {
             const dateObj = {
                 [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}

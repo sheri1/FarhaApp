@@ -114,9 +114,10 @@ if (Platform.OS === 'android') {
                 .catch(error=>console.log('e',error))
         }
 
-
-    
+        setTimeout( () => {
+         
             const defaultCity = this.state.user.city !== undefined ? this.state.user.city : "غزة";
+            console.log(defaultCity);
             firebase.firestore().collection('halls').where('address', "==" , defaultCity ).limit(4)
             .get().then((querySnapshot)  => {
                 let hallListData = [];
@@ -146,7 +147,8 @@ if (Platform.OS === 'android') {
             .catch(function(error) {
             console.log("Error getting documents: ", error);
         });
-
+    },5000)
+            
         
         
     }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar,TouchableOpacity,Image} from "react-native";
+import { View, ScrollView, StatusBar,TouchableOpacity,Image,ActivityIndicator} from "react-native";
 import styles from "./OrdersScreenStyle";
 import StyledText from '../../components/StyledTexts/StyledText'
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
@@ -12,9 +12,8 @@ export default class OrdersScreen extends Component {
         super(props);
         this.state = {
             
-            orderList:[
-            
-            ]
+            orderList:[],
+            isLoading:true
         }
     }
 
@@ -24,9 +23,10 @@ export default class OrdersScreen extends Component {
         .where("uid",  '==', userId.uid)
         .get()
         .then((querySnapshot)  => {
+            let DatesList = [];
             querySnapshot.forEach((doc) => {
               const orderData = doc.data();
-              let DatesList = [];
+              console.log(orderData)
               DatesList.push(
                 
                 {
@@ -43,12 +43,13 @@ export default class OrdersScreen extends Component {
                  price: orderData.roomPrice
                 }
               )
-              var joined = this.state.orderList.concat(DatesList)
-              this.setState({orderList:joined})
-
             
           });
-        })
+
+         this.setState({orderList:DatesList,
+        isLoading:false})
+
+    })
         .catch(function(error) {
           console.log("Error getting documents: ", error);
       });
@@ -56,6 +57,14 @@ export default class OrdersScreen extends Component {
     }
 
     render() {
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -93,5 +102,6 @@ export default class OrdersScreen extends Component {
             </ScrollView>
         </View>
         );
+      }
     }
 }

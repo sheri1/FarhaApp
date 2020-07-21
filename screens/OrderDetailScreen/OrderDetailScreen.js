@@ -24,19 +24,10 @@ export default class OrderDetailScreen extends Component {
         this.setState({orderDetails : details});
     }
 
-          //     id:doc.id,
-        //     rigesterDate: orderData.registerDate,
-        //     orderNumber:  doc.id,
-        //     hallName: orderData.hallName,
-        //     roomName: orderData.roomName,
-        //     userId:orderData.uid,
-        //     userName: orderData.userName,
-        //     userPhone: orderData.userPhone,
-        //     orderStatus: orderData.orderStatus
-        //    }
-
+    
     render() {
         const {orderDetails} = this.state;
+        console.log(orderDetails);
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
