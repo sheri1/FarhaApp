@@ -24,15 +24,14 @@ export default class OrdersScreen extends Component {
         .get()
         .then((querySnapshot)  => {
             let DatesList = [];
+            let counter = 1;
             querySnapshot.forEach((doc) => {
               const orderData = doc.data();
-              console.log(orderData)
-              DatesList.push(
-                
+              DatesList.push(                
                 {
                  id:doc.id,
                  rigesterDate: orderData.registerDate,
-                 orderNumber:  doc.id,
+                 orderNumber: 1500 + counter,
                  hallName: orderData.hallName,
                  roomName: orderData.roomName,
                  userId:orderData.uid,
@@ -43,6 +42,8 @@ export default class OrdersScreen extends Component {
                  price: orderData.roomPrice
                 }
               )
+              counter++;
+
             
           });
 

@@ -1,0 +1,1 @@
+{"ast":null,"code":"import NearScreen from \"./NearScreen\";\nexport default NearScreen;","map":{"version":3,"sources":["C:/Users/jit/Desktop/farhasheri/screens/NearScreen/index.js"],"names":["NearScreen"],"mappings":"AAAA,OAAOA,UAAP;AAEA,eAAeA,UAAf","sourcesContent":["import NearScreen from './NearScreen'\r\n\r\nexport default NearScreen"]},"metadata":{},"sourceType":"module"}

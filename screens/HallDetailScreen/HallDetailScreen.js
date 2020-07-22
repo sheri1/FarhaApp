@@ -15,24 +15,19 @@ class HallDetailScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            Sliderimages:[
-               
-            ],
-            hallDetail:{
-        
-            },
+            Sliderimages:[],
+            hallDetail:{},
             roomDetails: [],
             roomNum:1,
             ordersTap:[
-                {id:0,name:'معلومات التواصل',isSelect:false},
-               
-            ],
+                {id:0,name:'معلومات التواصل',isSelect:false},],
             managerDetails: {
                 name: 'اسم المالك',
                 phone: '059000000',
                 email: 'manager@gmail.com'
             },
             showFilter: 1,
+            showTabs:0,
             modalVisible:false,
             selectedDate:'',
             user: {},
@@ -41,9 +36,7 @@ class HallDetailScreen extends Component {
             isLoading:true,
             category: "",
             earnest:'',
-            markedDates: {   '2020-07-16': 
-            {selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}
-        },
+            markedDates: {},
         isAnonymousUser: false
         }
     }
@@ -117,6 +110,8 @@ class HallDetailScreen extends Component {
         const roomsRef = firebase.firestore().collection("rooms");
         const query = roomsRef.where("hallId", "==",id)
               .get().then((querySnapshot)  => {
+                 if (querySnapshot.size === 1) {this.setState({showTabs:0})}
+                  
                 let roomListDetails = [];
                   querySnapshot.forEach((doc) => {
                     const roomData = doc.data();
@@ -129,10 +124,16 @@ class HallDetailScreen extends Component {
                       
                         }
                     )
+
+                    this.setState({category:roomData.roomName})
+
                 });
                 var joined = this.state.roomDetails.concat(roomListDetails)
                 this.setState({roomDetails:joined,
-                    isLoading:false})
+                    isLoading:false
+                });
+
+                
             })
               .catch(function(error) {
                 console.log("Error getting documents: ", error);
@@ -180,36 +181,36 @@ class HallDetailScreen extends Component {
 
 
       firebase.firestore().collection("hallImages").where('hallId', "==" , id).get()
-      .then((querySnapshot)  => {
-        let hallListData = [];
-         querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        hallListData.push(
-            { image: data.hallImage,caption:data.caption}
-        )
+        .then((querySnapshot)  => {
+            let hallListData = [];
+            querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            hallListData.push(
+                { image: data.hallImage,caption:data.caption}
+            )
 
-        hallListData.push(
-            { image: data.roomImage,caption:data.caption}
-        )
-            
-    });
+            hallListData.push(
+                { image: data.roomImage,caption:data.caption}
+            )
+                
+        });
 
-    this.setState(prevState => ({
-        Sliderimages: [...prevState.Sliderimages, ...hallListData]
-    }))
+        this.setState(prevState => ({
+            Sliderimages: [...prevState.Sliderimages, ...hallListData]
+        }))
 
-    this.setState({isLoading:false});
-    
-    })
-    .catch(function(error) {
-    console.log("Error getting documents: ", error);
-    });
-    }
+        this.setState({isLoading:false});
+        
+        })
+        .catch(function(error) {
+        console.log("Error getting documents: ", error);
+        });
+        }
 
 
     render() {
-        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId,category} = this.state;
-        console.log(category);
+        const {user,roomDetails,managerDetails,hallId,isLoading,showFilter,ownerId,category,ordersTap,showTabs,Sliderimages} = this.state;
+  
         if (isLoading) {
             return (
                 <View style={{flex: 1, justifyContent: "center"}}>
@@ -243,7 +244,7 @@ class HallDetailScreen extends Component {
                                     >
                                        {index === 0 ? 
                                         <Text style={{color:"#fff",position:"absolute",top:"80%",right:10}}>{item.caption}</Text>
-                                        : <Text style={{color:"#fff",position:"absolute",top:"80%",right:10}}>{roomDetails[1].name}</Text>}
+                                        : <Text style={{color:"#fff",position:"absolute",top:"80%",right:10}}>{roomDetails[0].name}</Text>}
                                     </ImageBackground>
                                 )
                             })}  
@@ -326,15 +327,15 @@ class HallDetailScreen extends Component {
                             <View style={styles.ContactView}>
                                 <View style={styles.firstRow}>
                                     <View style={styles.firstRowPrice}>
-                                        <StyledText style={styles.firstPrice}>{roomDetails[showFilter].price}</StyledText>
+                                        <StyledText style={styles.firstPrice}>{roomDetails[showTabs].price}</StyledText>
                                     </View>
                                     <View style={styles.firstRowName}>
-                                <StyledText style={styles.firstName}>{roomDetails[showFilter].name}</StyledText>
+                                <StyledText style={styles.firstName}>{roomDetails[showTabs].name}</StyledText>
                                     </View>
                                 </View>
 
                                 <View style={styles.capView}>
-                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى {roomDetails[showFilter].numOfPeople} شخص </StyledText>
+                                    <StyledText style={styles.capTXT}>تتسع لأفراد حتى {roomDetails[showTabs].numOfPeople} شخص </StyledText>
                                 </View>
 
                                 <View style={styles.serviceView}>
@@ -477,7 +478,6 @@ class HallDetailScreen extends Component {
 
                             {
                                 this.state.roomDetails.map((item, index)=>{
-                
                            return <Picker.Item key={item.index} label={item.name} value={item.name} style={{textAlign: 'right'}} />
                                 
                             })}
@@ -525,18 +525,26 @@ class HallDetailScreen extends Component {
     }
 
     selectItem = (id) => {
-        let listDataCopy = JSON.parse(JSON.stringify(this.state.ordersTap));
+        const {roomDetails,ordersTap} = this.state;
+        let listDataCopy = JSON.parse(JSON.stringify(ordersTap));
         listDataCopy.forEach((elem) => {
         elem.isSelect = false;
         if (elem.id === id) {
             elem.isSelect = true;
         }
         });
-        const filter = id;
+
+        let filter = id ;
+        let filter2 = id - 1;
+        if(filter2 < 0) {
+            filter2 = 0;
+        }
+      
         // const filter = listDataCopy[id].id;
         this.setState({
             ordersTap: listDataCopy,
             showFilter: filter,
+            showTabs:filter2
         });
     }
 
@@ -554,22 +562,25 @@ class HallDetailScreen extends Component {
     }
 
     register() {
-        console.log(this.state.earnest);
+        
         this.setState({modalVisible:false})
         
         const {roomDetails,category,isAnonymousUser} = this.state;
+        console.log('cat',category);
         if (isAnonymousUser){
             this.props.navigation.navigate('LoginScreen');
         }else {
         const roomPrice = roomDetails.filter(item => {
-            if (item.name === category) return item
+            return item.name === category && item
         })
+
+        console.log(roomPrice);
 
         const fullOrderDate = new Date();
         const year = fullOrderDate.getFullYear();
-        const month = fullOrderDate.getMonth();
+        const month = fullOrderDate.getMonth() + 1;
         const date = fullOrderDate.getDate();
-        const orderDate = year + '-' + month + '-' + date;
+        const orderDate = year + '-' + month  + '-' + date;
         firebase.firestore().collection('registration').add({
             orderStatus :false,
             orderDate : orderDate,
