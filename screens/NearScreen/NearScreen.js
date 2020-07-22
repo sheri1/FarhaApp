@@ -17,9 +17,8 @@ export default class NearScreen extends Component {
     
     componentDidMount() {
         const info = this.props.navigation.getParam('city');
-
-        const defaultCity = this.state.city !== undefined ? this.state.city : "غزة";
         firebase.firestore().collection('halls').where("address", "==" , info )
+            .limit(15)
             .get().then((querySnapshot)  => {
                 if(querySnapshot.size === 0) {this.setState({count:false})}
                 let hallListData = [];
@@ -29,7 +28,6 @@ export default class NearScreen extends Component {
                     {id:doc.id,
                     image: hallData.hallImage,
                     name: hallData.name,
-                    
                     location:hallData.address,
                     discount:null,
                     isFav: false,
@@ -43,7 +41,7 @@ export default class NearScreen extends Component {
                 nearList: [...prevState.nearList, ...hallListData]
             }))
 
-            this.setState({isLoading:false,count:true});
+            this.setState({isLoading:false});
                 
             })
             .catch(function(error) {
@@ -53,6 +51,7 @@ export default class NearScreen extends Component {
     }
     render() {
         const {isLoading} = this.state;
+        console.log('near', this.state.nearList);
         if (isLoading) {
             return (
                 <View style={{flex: 1, justifyContent: "center"}}>
@@ -75,12 +74,12 @@ export default class NearScreen extends Component {
                 snapToStart={true}
             >     
                 <View style={{width: '100%',height:'100%',paddingBottom: 50}}>
-                {this.state.count &&
+                {this.state.nearList.length > 0 &&
                 <>
                     <View style={styles.storiesImagesCont}>
                         <NearList 
                             navigation={this.props.navigation}
-                            details={this.state.nearlist}
+                            details={this.state.nearList}
                         />
                     </View>
                 </>

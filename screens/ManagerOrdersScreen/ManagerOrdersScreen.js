@@ -30,7 +30,7 @@ export default class ManagerOrdersScreen extends Component {
                 {
                     id:doc.id,
                  rigesterDate: orderData.registerDate,
-                 orderNumber:  doc.id,
+                 orderNumber:  orderData.orderNum,
                  hallName: orderData.hallName,
                  roomName: orderData.roomName,
                  userId:orderData.uid,

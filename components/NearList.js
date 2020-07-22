@@ -23,7 +23,8 @@ export default class NearList extends React.Component {
                 extraData={this.props}
                 numColumns={2}
                 renderItem={({item, index})=>(
-                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}>
+                    <TouchableOpacity key={index} style={styles.container} activeOpacity={0.8}
+                    onPress={() => this.props.navigation.navigate('HallDetailScreen',{id:item.id})}>
                         <View style={styles.ImageCont}>
                             <Image source={{uri:item.image}} style={{width:120,height:100}} resizeMode='contain'/>
                             {item.discount &&

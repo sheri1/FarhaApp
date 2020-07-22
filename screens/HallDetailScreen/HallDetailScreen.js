@@ -37,6 +37,7 @@ class HallDetailScreen extends Component {
             category: "",
             earnest:'',
             markedDates: {},
+            orderNum:'',
         isAnonymousUser: false
         }
     }
@@ -67,7 +68,8 @@ class HallDetailScreen extends Component {
                     this.setState({
                         roomNum: docData.roomNum,
                         ownerId: docData.owner,
-                        earnest:docData.earnest
+                        earnest:docData.earnest,
+                        orderNum : docData.ordersCounter
                     }
                     );
                     const hallData = {
@@ -565,8 +567,25 @@ class HallDetailScreen extends Component {
         
         this.setState({modalVisible:false})
         
-        const {roomDetails,category,isAnonymousUser} = this.state;
-        console.log('cat',category);
+        const {roomDetails,category,isAnonymousUser,orderNum,hallId} = this.state;
+
+        function pad(c, width) {
+            let parts = c.split('-');
+            let n = Number(parts[1]) + 1;
+            n = n + '';
+            let padNum = n.length >= width ? n : new Array(width - n.length + 1).join(0) + n;
+          
+            return parts[0] + '-' + padNum
+        }
+        
+        //Increase ordersCounter
+        firebase.firestore().collection('halls').doc(hallId)
+            .update({
+                ordersCounter: pad(orderNum,3)
+            })
+        
+
+       
         if (isAnonymousUser){
             this.props.navigation.navigate('LoginScreen');
         }else {
@@ -574,7 +593,6 @@ class HallDetailScreen extends Component {
             return item.name === category && item
         })
 
-        console.log(roomPrice);
 
         const fullOrderDate = new Date();
         const year = fullOrderDate.getFullYear();
@@ -592,7 +610,8 @@ class HallDetailScreen extends Component {
             uid: this.state.user.uid,
             userName: this.state.user.displayName,
             userPhone: this.state.user.phone,
-            roomPrice: roomPrice[0].price
+            roomPrice: roomPrice[0].price,
+            orderNum: pad(orderNum,3)
         }).then(()=> {
             const dateObj = {
                 [this.state.registerDate]:{selected: true, marked: true, disableTouchEvent: true, selectedColor: '#d92027'}

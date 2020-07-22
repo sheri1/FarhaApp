@@ -195,13 +195,7 @@ import { withFirebaseHOC } from '../../config/Firebase'
   render() {
     console.log('region',this.state.reginFilter);
     const {isLoading} = this.state;
-    if (isLoading) {
-        return (
-            <View style={{flex: 1, justifyContent: "center"}}>
-                 <ActivityIndicator size="large" color="#924480" />
-            </View>
-        );
-      } else {
+
     return (
       <View style={styles.containerStyle}>          
         <View style={styles.StatusBar}>
@@ -259,12 +253,19 @@ import { withFirebaseHOC } from '../../config/Firebase'
             <View style={{width: '100%'}}>
               {this.state.result ?
                 <>
+                  {isLoading ? 
+                   <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                  </View>
+                :
+                
                   <View style={styles.storiesImagesCont}>
                     <SearchList 
                       navigation={this.props.navigation}
                       details={this.state.searchList}
                     />
                   </View>
+                }
                 </>
                 :
                 <View style={{width: '100%',paddingTop:50,justifyContent:'center',alignItems:'center'}}>
@@ -403,8 +404,6 @@ import { withFirebaseHOC } from '../../config/Firebase'
         </View>
       </View>
     );
-
-                  }
   }
 
   updateSearch = (search) => {

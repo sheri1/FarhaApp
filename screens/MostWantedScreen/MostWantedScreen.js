@@ -14,7 +14,7 @@ export default class MostWantedScreen extends Component {
     }
     
     componentDidMount() {
-        firebase.firestore().collection('halls').get()
+        firebase.firestore().collection('halls').limit(15).get()
         .then((querySnapshot)  => {
             let hallListData = [];
             querySnapshot.forEach((doc) => {
@@ -23,7 +23,6 @@ export default class MostWantedScreen extends Component {
                 {id:doc.id,
                 image: hallData.hallImage,
                 name: hallData.name,
-                
                 location:hallData.address,
                 discount:null,
                 isFav: false,
