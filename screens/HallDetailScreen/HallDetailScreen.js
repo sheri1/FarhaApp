@@ -502,7 +502,8 @@ class HallDetailScreen extends Component {
 
                 </View>
             </ScrollView>
-            {user.manager && user.uid === ownerId ? 
+            {user.manager && user.uid === ownerId &&
+            <>  
             <View style={{display:"flex",flexDirection: "row"}}>
             <TouchableOpacity style={styles.minView2} onPress={() => this.props.navigation.navigate('AddRoomScreen',{id:hallId,roomNum:this.state.roomNum})}>
                 <StyledText style={styles.minTXT2}>أضف قاعة جديدة</StyledText>
@@ -513,14 +514,18 @@ class HallDetailScreen extends Component {
                 <StyledText style={styles.minTXT2}>أضف التواريخ المحجوزة مسبقا</StyledText>
             </TouchableOpacity>
             </View>
-            :
-        
+            
+            </>
+        }
 
+            {user.manager == false &&
+            <> 
             <TouchableOpacity style={styles.minView} onPress={()=> this.setState({modalVisible:true})}>
                 <StyledText style={styles.minTXT}>الحجوزات</StyledText>
             </TouchableOpacity>
+            </>
+          }
 
-}
         </View>
         )
     }
