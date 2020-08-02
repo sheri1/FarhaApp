@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ScrollView, StatusBar, Image } from "react-native";
+import { View, ScrollView, StatusBar, Image,ActivityIndicator } from "react-native";
 import styles from "./FavoriteScreenStyle";
 import HeaderMenu from '../../components/HeadersComponent/HeaderMenu'
 import FavoriteList from '../../components/FavoriteList'
@@ -8,17 +8,9 @@ export default class FavoriteScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fav:[
-                {id:0,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:null,isFav:true
-                },
-                {id:1,image:require('../../assets/images/hall.png'),name:'صالة لارزوا',price:'100 $',
-                    location:'دير البلح',discount:'60%',isFav:true
-                }, 
-             
-            ],
-
-            hallIds: []
+            fav:[],
+            hallIds: [],
+            isLoading:true
         }
     }
 
@@ -29,18 +21,16 @@ export default class FavoriteScreen extends Component {
         const query = favRef.where('uid' , '==' , currentUser.uid)
         .get()
         .then((querySnapshot) => {
+            const ids = [];
             querySnapshot.forEach((doc)  => {
                 const snapShot = doc.data();
-                console.log(snapShot)
-                const ids = [];
                 ids.push(snapShot.hallId)
-                this.setState(prevState => ({
-                    hallIds: [...prevState.hallIds, ...ids]
-                }))
-                
+               
                 });
+            this.setState(prevState => ({
+                hallIds: [...prevState.hallIds, ...ids]
+            }))    
         })
-
         .catch(function(error) {
             console.log("Error getting documents1: ", error);
         });
@@ -65,19 +55,30 @@ export default class FavoriteScreen extends Component {
                       
                       }
                   )
+                  this.setState({isLoading:false});
                   this.setState(prevState => ({
                     fav: [...prevState.fav, ...hallListData]
                   }))
+
+                  
                     
               
             }).catch(e=>console.log(e))
             
          })
-         },5000)
+         },1000)
     
     }
     
     render() {
+        const {isLoading} = this.state;
+        if (isLoading) {
+            return (
+                <View style={{flex: 1, justifyContent: "center"}}>
+                     <ActivityIndicator size="large" color="#924480" />
+                </View>
+            );
+          } else {
         return (
         <View style={styles.containerStyle}>          
             <View style={styles.StatusBar}>
@@ -111,5 +112,6 @@ export default class FavoriteScreen extends Component {
             </ScrollView>
         </View>
         );
+            }
     }
 }

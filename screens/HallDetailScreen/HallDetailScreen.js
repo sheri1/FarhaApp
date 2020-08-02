@@ -518,7 +518,7 @@ class HallDetailScreen extends Component {
             </>
         }
 
-            {user.manager == false &&
+            {!user.manager &&
             <> 
             <TouchableOpacity style={styles.minView} onPress={()=> this.setState({modalVisible:true})}>
                 <StyledText style={styles.minTXT}>الحجوزات</StyledText>

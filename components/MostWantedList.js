@@ -2,15 +2,25 @@ import * as React from "react";
 import { StyleSheet, View, Image, TouchableOpacity , FlatList } from "react-native";
 import StyledText from './StyledTexts/StyledText';
 import { AntDesign, Entypo } from "@expo/vector-icons";
-
+import * as firebase from 'firebase';
 export default class MostWantedList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            uid:''
         }
     }
 
+    componentDidMount(){
+        const currentUser = firebase.auth().currentUser;
+        this.setState({uid:currentUser.uid})
+    }
+
+    favPress(id) {
+        console.log(id);
+    }
     render() {
+        const {uid} = this.state;
         let wantedList = this.props.details
         return (
         <>
@@ -36,7 +46,7 @@ export default class MostWantedList extends React.Component {
                         </View>
                         <View style={styles.heartCont}>
                             <TouchableOpacity style={styles.heartTouch}
-                                // onPress={()=> this.favPress()}
+                                onPress={()=> this.favPress(uid)}
                             >
                                 {item.isFav ? 
                                     <AntDesign name='heart' size={20} color='red'/>

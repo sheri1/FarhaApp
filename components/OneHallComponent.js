@@ -9,11 +9,12 @@ export default class OneHallComponent extends React.Component {
         super(props);
         this.state = {
             isFav:false,
+            hallId:false
         }
     }
 
     render() {
-        let sectionDetailList = this.props.details
+        let sectionDetailList = this.props.details;
         return (
         <>
         {sectionDetailList.map((item,index)=>{
@@ -63,13 +64,13 @@ export default class OneHallComponent extends React.Component {
         const query = favRef.where('hallId', '==' ,id)
         .where('uid' , '==' , currentUser.uid)
         .get()
-        .then(function(querySnapshot) {
-         
+        .then((querySnapshot) => {
             if (querySnapshot.size === 0) {
                 favRef.add({
                     uid: currentUser.uid,
-                    hallId: id
+                    hallId: id,
                 })
+              
             }else {
             querySnapshot.forEach(function(doc) {
                 // doc.data() is never undefined for query doc snapshots

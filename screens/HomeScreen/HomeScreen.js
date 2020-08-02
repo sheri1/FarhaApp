@@ -68,15 +68,32 @@ if (Platform.OS === 'android') {
             nearList:[],
             activeIndex:0,
             user: {},
-            isLoading:true
-      
+            isLoading:true,
+            hallIds:[],
+    
     
         }
     }
 
+
     componentDidMount(){
         registerPushNotification();
         const currentUser = this.props.firebase.auth.currentUser;
+        const favRef = firebase.firestore().collection('favouriteHalls');
+        const query = favRef.where('uid' , '==' , currentUser.uid)
+        .onSnapshot((querySnapshot) => {
+            console.log('done')
+            querySnapshot.forEach((doc)  => {
+                let ids = [];
+                const snapShot = doc.data();
+                ids.push(snapShot.hallId)
+             
+                this.setState(prevState => ({
+                    hallIds: [...prevState.hallIds, ...ids]
+                }))  
+        });  
+        })
+      
         firebase.firestore().collection('halls').limit(4).get()
         .then((querySnapshot)  => {
             let hallListData = [];
@@ -89,7 +106,7 @@ if (Platform.OS === 'android') {
                 
                 location:hallData.address,
                 discount:null,
-                isFav: false,
+                isFav: this.isFavHall(doc.id),
                 uri:true
                 
                 }
@@ -130,7 +147,7 @@ if (Platform.OS === 'android') {
                     
                     location:hallData.address,
                     discount:null,
-                    isFav: false,
+                    isFav: this.isFavHall(doc.id),
                     uri:true
                     
                     }
@@ -153,9 +170,16 @@ if (Platform.OS === 'android') {
         
     }
 
+    isFavHall(id) {
+        const {hallIds} = this.state;
+        const result = hallIds.filter(item => item === id)
+        return result.length !== 0 ? true : false
+    }
+
+   
 
     render() {
-
+      
         const {isLoading} = this.state;
         if (isLoading) {
             return (
@@ -240,7 +264,7 @@ if (Platform.OS === 'android') {
                     </View>
                     <View style={styles.storiesImagesCont}>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                            <OneHallComponent navigation={this.props.navigation} details={this.state.mostWanted}/>
+                            <OneHallComponent navigation={this.props.navigation}  details={this.state.mostWanted}/>
                         </ScrollView>
                     </View>
         </>
